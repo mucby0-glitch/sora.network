@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta name="google-site-verification" content="QrObR9x3Zmz6S0lZu0h64VXtBMNIkbAYuELV183Zg5A" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101010">
+<meta name="description" content="SoraNetwork - Yeni maceralara katıl.">
+<title>SoraNetwork | Minecraft Network</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+  --bg:#0b0b0b;--surface:#141414;--surface-2:#1c1c1c;
+  --orange:#ff7417;--orange-light:#ff9a45;--text:#f5f5f5;
+  --muted:#a5a5a5;--line:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+.container{width:min(1160px,90%);margin:auto}
+header{height:82px;position:sticky;top:0;z-index:20;background:rgba(10,10,10,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand-logo{width:38px;height:38px;object-fit:contain;border-radius:10px;vertical-align:middle;margin-right:8px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:20px;letter-spacing:-.7px;white-space:nowrap}
+.brand img{width:48px;height:48px;object-fit:cover;border-radius:50%;border:1px solid rgba(255,116,23,.45)}
+.brand span{color:var(--orange)}
+nav{display:flex;align-items:center;gap:27px}
+nav a{font-size:13px;color:#c3c3c3;font-weight:600;transition:.2s}
+nav a:hover{color:var(--orange)}
+.nav-cta,.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:8px;padding:12px 18px;font-size:13px;font-weight:800;transition:.2s;cursor:pointer}
+.nav-cta,.btn-primary{background:var(--orange);color:#15100c;border:1px solid var(--orange)}
+.nav-cta:hover,.btn-primary:hover{background:var(--orange-light);transform:translateY(-2px)}
+.menu-toggle{display:none;background:none;border:1px solid var(--line);color:white;border-radius:8px;padding:9px 12px}
+.hero{position:relative;overflow:hidden;padding:105px 0 78px;background:
+ radial-gradient(ellipse at 78% 40%,rgba(255,116,23,.16),transparent 34%),
+ radial-gradient(ellipse at 10% 5%,rgba(255,116,23,.08),transparent 30%),
+ linear-gradient(135deg,#101010,#090909 65%)}
+.hero:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(to bottom,black,transparent)}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:45px}
+.kicker{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
+h1{font-size:clamp(44px,7vw,82px);line-height:1.02;letter-spacing:-4px;margin:18px 0}
+h1 span{color:var(--orange)}
+.hero-copy{max-width:570px;color:#b6b6b6;font-size:15px;margin-bottom:28px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-outline{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.035);color:white}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.hero-logo-wrap{display:flex;justify-content:center;align-items:center;position:relative}
+.hero-logo-glow{position:absolute;width:min(390px,75vw);aspect-ratio:1;border-radius:50%;background:rgba(255,116,23,.13);filter:blur(65px)}
+.hero-logo{position:relative;width:min(310px,68vw);aspect-ratio:1;object-fit:cover;border-radius:28%;border:1px solid rgba(255,116,23,.38);box-shadow:0 25px 90px rgba(0,0,0,.6),0 0 55px rgba(255,116,23,.12)}
+.quick-info{display:flex;gap:12px;flex-wrap:wrap;margin-top:42px}
+.info-pill{border:1px solid var(--line);background:rgba(255,255,255,.035);padding:12px 15px;border-radius:9px;min-width:155px}
+.info-pill small{display:block;color:#888;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.info-pill strong{font-size:13px}
+section{padding:82px 0}
+.section-head{text-align:center;margin-bottom:38px}
+.section-head .kicker{font-size:10px}
+h2{font-size:clamp(27px,4vw,39px);letter-spacing:-1.4px;margin-top:8px}
+.section-head p{color:var(--muted);font-size:14px;margin-top:9px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.card{background:linear-gradient(145deg,#1a1a1a,#111);border:1px solid var(--line);border-radius:13px;padding:25px;transition:.25s}
+.card:hover{transform:translateY(-5px);border-color:rgba(255,116,23,.55)}
+.card-icon{width:45px;height:45px;display:grid;place-items:center;background:rgba(255,116,23,.12);color:var(--orange);border-radius:10px;font-size:22px;margin-bottom:20px}
+.card h3{font-size:17px;margin-bottom:8px}
+.card p{font-size:13px;color:var(--muted)}
+.tag{display:inline-block;margin-top:18px;padding:5px 9px;border-radius:5px;background:rgba(255,116,23,.12);color:var(--orange-light);font-size:10px;font-weight:800;letter-spacing:.8px}
+.mode-card{display:flex;flex-direction:column;min-height:225px}
+.mode-card .mode-bottom{margin-top:auto;padding-top:18px;display:flex;justify-content:space-between;align-items:center}
+.mode-card .mode-bottom span{font-size:11px;color:var(--orange);font-weight:800}
+.mode-card .arrow{width:30px;height:30px;border-radius:50%;background:var(--orange);color:#111;display:grid;place-items:center;font-weight:900}
+.banner{padding:38px;border:1px solid rgba(255,116,23,.32);border-radius:16px;background:radial-gradient(ellipse at 90% 50%,rgba(255,116,23,.15),transparent 40%),#151515;display:flex;align-items:center;justify-content:space-between;gap:25px}
+.banner p{color:var(--muted);font-size:13px;margin-top:7px}
+footer{border-top:1px solid var(--line);padding:30px 0;color:#888;font-size:12px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-brand{display:flex;align-items:center;gap:9px;color:#eee;font-weight:800}
+.footer-brand img{width:30px;height:30px;border-radius:50%}
+.notice{color:#777;font-size:11px;margin-top:15px}
+@media(max-width:850px){
+ nav{display:none;position:absolute;top:81px;left:0;right:0;padding:20px 5%;background:#111;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}
+ nav.open{display:flex}.menu-toggle{display:block}.nav-cta{display:none}
+ .hero-grid{grid-template-columns:1fr;text-align:center}.hero-copy{margin-left:auto;margin-right:auto}
+ .actions,.quick-info{justify-content:center}.hero-logo-wrap{grid-row:1}
+ .hero{padding:65px 0}.hero-logo{width:min(220px,55vw)}
+ .cards{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .cards{grid-template-columns:1fr}section{padding:62px 0}
+ h1{letter-spacing:-2.5px}.banner{padding:27px;align-items:flex-start;flex-direction:column}
+ .brand{font-size:17px}.brand img{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="brand" href="#home" aria-label="SoraNetwork ana sayfa">
+      <img src="sora-logo.webp" alt="SoraNetwork tilki amblemi">
+      <div>SORA<span>NETWORK</span></div>
+    </a>
+    <nav id="navigation">
+      <a href="#home">Ana Sayfa</a>
+      <a href="#modes">Oyun Modları</a>
+      <a href="#store">Mağaza</a>
+      <a href="#staff">Yetkili Kadrosu</a>
+      <a href="#rules">Kurallar</a>
+      <a href="#news">Duyurular</a>
+    </nav>
+    <a class="nav-cta" href="https://discord.com/" target="_blank" rel="noopener">Discord ↗</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç">☰</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div>
+      <div class="kicker">Minecraft Network • Yeni maceralar</div>
+      <h1>SORA<span>NETWORK</span></h1>
+      <p class="hero-copy">Yeni dünyalar keşfet, kendi hikâyeni yaz ve topluluğumuzun bir parçası ol. SoraNetwork'te macera daha yeni başlıyor.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#modes">Sunucuya göz at <span>→</span></a>
+        <a class="btn btn-outline" href="https://discord.com/" target="_blank" rel="noopener">Discord topluluğu</a>
+      </div>
+      <div class="quick-info">
+        <div class="info-pill"><small>Sunucu durumu</small><strong>Bilgi yakında</strong></div>
+        <div class="info-pill"><small>Aktif oyun modu</small><strong>Towny</strong></div>
+        <div class="info-pill"><small>Sunucu adresi</small><strong>Yakında açıklanacak</strong></div>
+      </div>
+    </div>
+    <div class="hero-logo-wrap">
+      <div class="hero-logo-glow"></div>
+      <img class="hero-logo" src="sora-logo.webp" alt="SoraNetwork tilki maskotu">
+    </div>
+  </div>
+</section>
+
+<section id="modes">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Keşfet</div>
+      <h2>Oyun Modları</h2>
+      <p>SoraNetwork dünyasında seni bekleyen maceraları keşfet.</p>
+    </div>
+    <div class="cards">
+      <article class="card mode-card">
+        <div class="card-icon">🏰</div>
+        <h3>Towny</h3>
+        <p>Kendi şehrini kur, toprağını genişlet, ekonomiye katıl ve diğer oyuncularla birlikte geliş.</p>
+        <div class="mode-bottom"><span>İLK OYUN MODU</span><span class="arrow">→</span></div>
+      </article>
+      <article class="card mode-card">
+        <div class="card-icon">✦</div>
+        <h3>Yeni modlar</h3>
+        <p>SoraNetwork büyüdükçe yeni oyun modları ve farklı maceralar da aramıza katılacak.</p>
+        <div class="mode-bottom"><span>YAKINDA</span><span class="arrow">+</span></div>
+      </article>
+      <article class="card mode-card">
+        <div class="card-icon">🌐</div>
+        <h3>Network deneyimi</h3>
+        <p>Tek bir oyun modundan fazlası: gelişen, yenilenen ve oyuncularıyla büyüyen bir topluluk.</p>
+        <div class="mode-bottom"><span>SORANETWORK</span><span class="arrow">→</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="store" style="padding-top:0">
+  <div class="container">
+    <div class="banner">
+      <div><div class="kicker">SoraNetwork mağaza</div><h2>Destek ol, birlikte büyüyelim.</h2><p>Mağaza ve destek paketleri hakkındaki bilgiler yakında burada.</p></div>
+      <a class="btn btn-primary" href="#store">Çok yakında</a>
+    </div>
+  </div>
+</section>
+
+<section id="staff" style="padding-top:0">
+  <div class="container">
+    <div class="section-head"><div class="kicker">Topluluk</div><h2>Yetkili Kadrosu</h2><p>Oyuncularımıza yardımcı olan ekibimizi burada tanıyabilirsin.</p></div>
+    <div class="cards">
+      <article class="card"><div class="card-icon">♟</div><h3>Yönetim Ekibi</h3><p>Sunucunun gelişimini ve genel işleyişini yöneten ekip.</p></article>
+      <article class="card"><div class="card-icon">◆</div><h3>Yetkililer</h3><p>Oyun içindeki düzeni ve oyuncu deneyimini destekleyen ekip.</p></article>
+      <article class="card"><div class="card-icon">✉</div><h3>Destek</h3><p>Soruların ve destek taleplerin için topluluk kanallarımız.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="rules" style="padding-top:0">
+  <div class="container">
+    <div class="banner">
+      <div><div class="kicker">Adil oyun, iyi topluluk</div><h2>Kuralları keşfet.</h2><p>Herkes için keyifli ve adil bir oyun ortamı oluşturuyoruz.</p></div>
+      <a class="btn btn-outline" href="#rules">Kurallar yakında</a>
+    </div>
+  </div>
+</section>
+
+<section id="news" style="padding-top:0">
+  <div class="container">
+    <div class="section-head"><div class="kicker">Güncel kal</div><h2>Duyurular</h2><p>Sunucu haberleri ve açılış duyuruları burada paylaşılacak.</p></div>
+    <div class="card"><div class="card-icon">🔔</div><h3>İlk duyurular yakında</h3><p>SoraNetwork ile ilgili gelişmeleri kaçırmamak için Discord topluluğumuza katıl.</p></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand"><img src="sora-logo.webp" alt="SoraNetwork tilki logosu" class="brand-logo"> SoraNetwork</div>
+      <span>© 2026 SoraNetwork. Tüm hakları saklıdır.</span>
+      <a href="https://discord.com/" target="_blank" rel="noopener">Discord ↗</a>
+    </div>
+    <p class="notice">Bu site Minecraft ile resmi olarak bağlantılı değildir. Minecraft, Mojang Studios'un ticari markasıdır.</p>
+  </div>
+</footer>
+<script>
+const toggle=document.getElementById('menuToggle');
+const nav=document.getElementById('navigation');
+toggle.addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
+</script>
+</body>
+</html>
