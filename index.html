@@ -100,12 +100,78 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:#888;font-size:12px
 .footer-brand img{width:30px;height:30px;border-radius:50%}
 .notice{color:#777;font-size:11px;margin-top:15px}
 @media(max-width:850px){
- nav{display:none;position:absolute;top:81px;left:0;right:0;padding:20px 5%;background:#111;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start}
- nav.open{display:flex}.menu-toggle{display:block}.nav-cta{display:none}
- .hero-grid{grid-template-columns:1fr;text-align:center}.hero-copy{margin-left:auto;margin-right:auto}
- .actions,.quick-info{justify-content:center}.hero-logo-wrap{grid-row:1}
- .hero{padding:65px 0}.hero-logo{width:min(220px,55vw)}
- .cards{grid-template-columns:1fr 1fr}
+
+    nav{
+        display:none;
+        position:absolute;
+        top:81px;
+        left:0;
+        right:0;
+        padding:20px 5%;
+        background:#111;
+        border-bottom:1px solid var(--line);
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    nav.open{display:flex}
+    .menu-toggle{display:block}
+    .nav-cta{display:none}
+
+    .hero-grid{
+        grid-template-columns:1fr;
+        text-align:center;
+        gap:25px;
+    }
+
+    .hero-logo-wrap{
+        grid-row:1;
+        transform:none;
+    }
+
+    .hero-logo{
+        width:min(220px,55vw);
+    }
+
+    .hero-copy{
+        margin-left:auto;
+        margin-right:auto;
+        max-width:100%;
+        font-size:clamp(15px,4vw,19px);
+    }
+
+    h1{
+        font-size:clamp(34px,9vw,58px);
+        letter-spacing:-2px;
+        line-height:1.05;
+    }
+
+    .actions{
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .quick-info{
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .info-pill{
+        flex:1 1 140px;
+        min-width:0;
+    }
+
+    .hero{
+        padding:45px 0;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .grid.grid-3{
+        grid-template-columns:1fr;
+    }
 }
 @media(max-width:560px){
  .cards{grid-template-columns:1fr}section{padding:62px 0}
