@@ -497,7 +497,9 @@ body::after {
         <div class="info-pill"><small>Sunucu türü</small><strong>Minecraft Network</strong></div>
         <div class="info-pill">
   <small>Sunucu adresi</small>
-  <strong>play.soranetwork.com.tr</strong>
+  <button class="copy-ip" onclick="navigator.clipboard.writeText('play.soranetwork.com.tr').then(() => this.textContent = 'Kopyalandı!')">
+    play.soranetwork.com.tr 📋
+  </button>
 </div>
       </div>
     </div>
