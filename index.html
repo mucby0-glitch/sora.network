@@ -472,7 +472,28 @@ body::after {
 .copy-ip:hover {
     text-shadow: 0 0 12px rgba(255,116,23,.6);
 }
+/* MOBİL EKRAN DÜZENLEMESİ */
+@media (max-width: 560px) {
+    .quick-info {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        gap: 12px;
+    }
 
+    .info-pill {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .info-pill strong,
+    .copy-ip {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+}
+  
 </style>
 </head>
 <body>
