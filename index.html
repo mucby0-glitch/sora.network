@@ -408,6 +408,57 @@ body::before {
     }
 }
 
+/* =================================
+   SORANETWORK - ORANGE PARTICLES
+================================= */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .55;
+
+    background-image:
+        radial-gradient(circle, rgba(255,116,23,.9) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,154,69,.7) 1.5px, transparent 2.5px),
+        radial-gradient(circle, rgba(255,116,23,.6) 1px, transparent 2px),
+        radial-gradient(circle, rgba(255,190,120,.5) 1px, transparent 2px);
+
+    background-size:
+        170px 190px,
+        230px 250px,
+        310px 280px,
+        370px 330px;
+
+    background-position:
+        20px 40px,
+        100px 120px,
+        180px 60px,
+        50px 220px;
+
+    animation: soraParticles 22s linear infinite;
+}
+
+@keyframes soraParticles {
+    0% {
+        background-position:
+            20px 40px,
+            100px 120px,
+            180px 60px,
+            50px 220px;
+    }
+
+    100% {
+        background-position:
+            20px -300px,
+            100px -180px,
+            180px -240px,
+            50px -110px;
+    }
+}
+
 </style>
 </head>
 <body>
