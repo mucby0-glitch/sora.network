@@ -834,6 +834,7 @@ nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.cl
 async function checkServer() {
     const status = document.getElementById("server-status");
     const players = document.getElementById("server-players");
+    const playerList = document.getElementById("server-player-list");
 
     try {
         const response = await fetch(
@@ -844,15 +845,29 @@ async function checkServer() {
 
         if (data.online) {
             status.textContent = "🟢 Çevrimiçi";
+
             players.textContent =
                 "Oyuncular: " + data.players.online + "/" + data.players.max;
+
+            if (data.players.list && data.players.list.length > 0) {
+                playerList.textContent =
+                    "Çevrimiçi: " +
+                    data.players.list.map(player => player.name).join(", ");
+            } else {
+                playerList.textContent =
+                    "Oyuncu isimleri şu anda alınamıyor.";
+            }
+
         } else {
             status.textContent = "🔴 Çevrimdışı";
             players.textContent = "Oyuncular: 0";
+            playerList.textContent = "Sunucu çevrimdışı.";
         }
+
     } catch (error) {
         status.textContent = "Durum alınamadı";
         players.textContent = "Oyuncular: --";
+        playerList.textContent = "Oyuncu listesi alınamadı.";
     }
 }
 
