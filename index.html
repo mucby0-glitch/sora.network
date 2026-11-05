@@ -357,6 +357,57 @@ nav a:hover::after {
     }
 }
 
+/* =================================
+   SORANETWORK - ANIMATED BACKGROUND
+================================= */
+
+body {
+    position: relative;
+    isolation: isolate;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -30%;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 116, 23, .13),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 116, 23, .10),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 65% 80%,
+            rgba(255, 116, 23, .12),
+            transparent 25%
+        );
+
+    filter: blur(45px);
+    animation: soraBackground 18s ease-in-out infinite alternate;
+}
+
+@keyframes soraBackground {
+    0% {
+        transform: translate(-3%, -2%) scale(1);
+    }
+
+    50% {
+        transform: translate(3%, 2%) scale(1.08);
+    }
+
+    100% {
+        transform: translate(-2%, 4%) scale(1.03);
+    }
+}
+
 </style>
 </head>
 <body>
