@@ -125,10 +125,12 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:#888;font-size:12px
     }
 
     .hero-logo-wrap{
-        grid-row:1;
-        transform:none;
-    }
-
+    grid-row:auto;
+    grid-column:1;
+    transform:none;
+    order:-1;
+    justify-content:center;
+}
     .hero-logo{
         width:min(220px,55vw);
     }
