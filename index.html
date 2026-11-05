@@ -729,5 +729,34 @@ const nav=document.getElementById('navigation');
 toggle.addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
 </script>
+  <script>
+async function checkServer() {
+    const status = document.getElementById("server-status");
+    const players = document.getElementById("server-players");
+
+    try {
+        const response = await fetch(
+            "https://api.mcsrvstat.us/3/play.soranetwork.com.tr"
+        );
+
+        const data = await response.json();
+
+        if (data.online) {
+            status.textContent = "🟢 Çevrimiçi";
+            players.textContent =
+                "Oyuncular: " + data.players.online + "/" + data.players.max;
+        } else {
+            status.textContent = "🔴 Çevrimdışı";
+            players.textContent = "Oyuncular: 0";
+        }
+    } catch (error) {
+        status.textContent = "Durum alınamadı";
+        players.textContent = "Oyuncular: --";
+    }
+}
+
+checkServer();
+setInterval(checkServer, 60000);
+</script>
 </body>
 </html>
