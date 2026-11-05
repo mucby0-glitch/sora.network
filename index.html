@@ -493,6 +493,40 @@ body::after {
         overflow-wrap: anywhere;
     }
 }
+/* SORANETWORK - JOIN SECTION */
+
+.join-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 18px;
+}
+
+.join-steps .card {
+    padding: 25px;
+    transition: .3s ease;
+}
+
+.join-steps .card-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255,116,23,.15);
+    color: var(--orange);
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 18px;
+}
+
+.join-steps .card h3 {
+    margin-bottom: 10px;
+}
+
+.join-steps .card p {
+    color: var(--muted);
+    line-height: 1.7;
+}
   
 </style>
 </head>
