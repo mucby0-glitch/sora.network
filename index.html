@@ -948,14 +948,41 @@ async function checkServer() {
         item.className = "player-item";
 
         const head = document.createElement("img");
-        head.className = "player-head";
+head.className = "player-head";
+head.alt = player.name;
+head.loading = "lazy";
 
+if (player.skin) {
+    const skinImage = new Image();
+    skinImage.crossOrigin = "anonymous";
+
+    skinImage.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 32;
+        canvas.height = 32;
+
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = false;
+
+        // Kafanın ön yüzünü çiz
+        ctx.drawImage(skinImage, 8, 8, 8, 8, 0, 0, 32, 32);
+
+        // Kafa üzerindeki şapka/saç katmanını çiz
+        ctx.drawImage(skinImage, 40, 8, 8, 8, 0, 0, 32, 32);
+
+        head.src = canvas.toDataURL("image/png");
+    };
+
+    skinImage.onerror = () => {
         head.src = "https://mc-heads.net/avatar/" +
-    encodeURIComponent(player.name) + "/32";
+            encodeURIComponent(player.name) + "/32";
+    };
 
-        head.alt = player.name;
-        head.loading = "lazy";
-
+    skinImage.src = player.skin.replace(/^http:/, "https:");
+} else {
+    head.src = "https://mc-heads.net/avatar/" +
+        encodeURIComponent(player.name) + "/32";
+}
         const playerName = document.createElement("span");
         playerName.textContent = player.name;
 
