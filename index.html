@@ -985,6 +985,19 @@ const nav=document.getElementById('navigation');
 toggle.addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
 </script>
+  <!-- Oyuncu Profil Penceresi -->
+<div id="player-modal" class="player-modal">
+    <div class="player-modal-content">
+        <button id="close-player-modal" class="player-modal-close">×</button>
+
+        <img id="profile-head" src="" alt="Oyuncu kafası">
+
+        <h2 id="profile-name">Oyuncu</h2>
+
+        <p>Oyuncu UUID</p>
+        <span id="profile-uuid"></span>
+    </div>
+</div>
   <script>
 async function checkServer() {
     const status = document.getElementById("server-status");
@@ -1107,21 +1120,6 @@ playerModal.addEventListener("click", (event) => {
 
 checkServer();
 setInterval(checkServer, 60000);
-
-<!-- Oyuncu Profil Penceresi -->
-<div id="player-modal" class="player-modal">
-    <div class="player-modal-content">
-        <button id="close-player-modal" class="player-modal-close">×</button>
-
-        <img id="profile-head" src="" alt="Oyuncu kafası">
-
-        <h2 id="profile-name">Oyuncu</h2>
-
-        <p>Oyuncu UUID</p>
-        <span id="profile-uuid"></span>
-    </div>
-</div>
-
 </script>
 </body>
 </html>
