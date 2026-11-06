@@ -895,14 +895,13 @@ toggle.addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
 </script>
   <script>
-
 async function checkServer() {
     const status = document.getElementById("server-status");
     const players = document.getElementById("server-players");
     const playerList = document.getElementById("server-player-list");
+    const playerCount = document.getElementById("player-count");
 
     try {
-        // Sunucu durumunu ve oyuncu sayısını al
         const response = await fetch(
             "https://api.mcsrvstat.us/3/play.soranetwork.com.tr"
         );
@@ -915,16 +914,24 @@ async function checkServer() {
             players.textContent =
                 "Oyuncular: " + data.players.online + "/" + data.players.max;
 
-            // Oyuncu isimlerini kendi API'mizden al
             const playerResponse = await fetch(
                 "https://api.soranetwork.com.tr/api/players"
             );
 
             const playerData = await playerResponse.json();
+            const onlinePlayers = playerData.players || [];
 
-            if (playerData.players && playerData.players.length > 0) {
-                playerList.textContent =
-                    "Çevrimiçi: " + playerData.players.join(", ");
+            playerCount.textContent = onlinePlayers.length;
+
+            playerList.innerHTML = "";
+
+            if (onlinePlayers.length > 0) {
+                onlinePlayers.forEach(name => {
+                    const item = document.createElement("div");
+                    item.className = "player-item";
+                    item.textContent = name;
+                    playerList.appendChild(item);
+                });
             } else {
                 playerList.textContent = "Şu anda çevrimiçi oyuncu yok.";
             }
@@ -932,12 +939,14 @@ async function checkServer() {
         } else {
             status.textContent = "🔴 Çevrimdışı";
             players.textContent = "Oyuncular: 0";
+            playerCount.textContent = "0";
             playerList.textContent = "Sunucu çevrimdışı.";
         }
 
     } catch (error) {
         status.textContent = "Durum alınamadı";
         players.textContent = "Oyuncular: --";
+        playerCount.textContent = "?";
         playerList.textContent = "Oyuncu listesi alınamadı.";
     }
 }
