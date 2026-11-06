@@ -117,19 +117,36 @@ h1 span {
 }
 
 .player-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
     background: rgba(255,255,255,.04);
     border: 1px solid var(--line);
     border-radius: 6px;
     padding: 7px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.player-head {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.player-item span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 12px;
 }
 
 .player-item::before {
     content: "●";
     color: #35d07f;
-    margin-right: 6px;
+    flex-shrink: 0;
 }
 section{padding:82px 0}
 .section-head{text-align:center;margin-bottom:38px}
@@ -926,12 +943,25 @@ async function checkServer() {
             playerList.innerHTML = "";
 
             if (onlinePlayers.length > 0) {
-                onlinePlayers.forEach(name => {
-                    const item = document.createElement("div");
-                    item.className = "player-item";
-                    item.textContent = name;
-                    playerList.appendChild(item);
-                });
+               onlinePlayers.forEach(name => {
+    const item = document.createElement("div");
+    item.className = "player-item";
+
+    const head = document.createElement("img");
+    head.className = "player-head";
+    head.src = "https://mc-heads.net/avatar/" +
+        encodeURIComponent(name) + "/32";
+    head.alt = name;
+    head.loading = "lazy";
+
+    const playerName = document.createElement("span");
+    playerName.textContent = name;
+
+    item.appendChild(head);
+    item.appendChild(playerName);
+
+    playerList.appendChild(item);
+});
             } else {
                 playerList.textContent = "Şu anda çevrimiçi oyuncu yok.";
             }
