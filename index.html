@@ -950,7 +950,8 @@ async function checkServer() {
         const head = document.createElement("img");
         head.className = "player-head";
 
-        head.src = player.skin;
+        head.src = "https://mc-heads.net/avatar/" +
+    encodeURIComponent(player.uuid) + "/32";
     ? "https://mc-heads.net/avatar/" +
       encodeURIComponent(player.name) + "/32"
     : "https://mc-heads.net/avatar/MHF_Steve/32";
