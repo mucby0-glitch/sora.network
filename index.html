@@ -943,28 +943,32 @@ async function checkServer() {
             playerList.innerHTML = "";
 
             if (onlinePlayers.length > 0) {
-               onlinePlayers.forEach(name => {
-    const item = document.createElement("div");
-    item.className = "player-item";
+    onlinePlayers.forEach(player => {
+        const item = document.createElement("div");
+        item.className = "player-item";
 
-    const head = document.createElement("img");
-    head.className = "player-head";
-    head.src = "https://mc-heads.net/avatar/" +
-        encodeURIComponent(name) + "/32";
-    head.alt = name;
-    head.loading = "lazy";
+        const head = document.createElement("img");
+        head.className = "player-head";
 
-    const playerName = document.createElement("span");
-    playerName.textContent = name;
+        head.src = player.skin
+            ? "https://mc-heads.net/avatar/" +
+              encodeURIComponent(player.uuid) + "/32"
+            : "https://mc-heads.net/avatar/MHF_Steve/32";
 
-    item.appendChild(head);
-    item.appendChild(playerName);
+        head.alt = player.name;
+        head.loading = "lazy";
 
-    playerList.appendChild(item);
-});
-            } else {
-                playerList.textContent = "Şu anda çevrimiçi oyuncu yok.";
-            }
+        const playerName = document.createElement("span");
+        playerName.textContent = player.name;
+
+        item.appendChild(head);
+        item.appendChild(playerName);
+
+        playerList.appendChild(item);
+    });
+} else {
+    playerList.textContent = "Şu anda çevrimiçi oyuncu yok.";
+}
 
         } else {
             status.textContent = "🔴 Çevrimdışı";
