@@ -1092,6 +1092,7 @@ item.addEventListener("click", () => {
         playerList.textContent = "Oyuncu listesi alınamadı.";
     }
 }
+    
 const playerModal = document.getElementById("player-modal");
 
 document.getElementById("close-player-modal").addEventListener("click", () => {
@@ -1106,6 +1107,7 @@ playerModal.addEventListener("click", (event) => {
 
 checkServer();
 setInterval(checkServer, 60000);
+
 <!-- Oyuncu Profil Penceresi -->
 <div id="player-modal" class="player-modal">
     <div class="player-modal-content">
