@@ -599,6 +599,80 @@ body::after {
     color: var(--muted);
     line-height: 1.7;
 }
+/* Oyuncu Profil Penceresi */
+.player-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.player-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+    padding: 35px 25px;
+    text-align: center;
+    background: #151515;
+    border: 1px solid rgba(255, 130, 30, 0.5);
+    border-radius: 18px;
+    box-shadow: 0 0 35px rgba(255, 115, 0, 0.2);
+    animation: profileOpen 0.25s ease;
+}
+
+.player-modal-content h2 {
+    color: #ff851b;
+    margin: 15px 0;
+}
+
+.player-modal-content p {
+    color: #aaa;
+    margin-bottom: 6px;
+}
+
+#profile-uuid {
+    color: #ddd;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+#profile-head {
+    width: 96px;
+    height: 96px;
+    image-rendering: pixelated;
+    border-radius: 12px;
+    background: #222;
+}
+
+.player-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.player-modal-close:hover {
+    color: #ff851b;
+}
+
+@keyframes profileOpen {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
   
 </style>
 </head>
@@ -988,6 +1062,15 @@ if (player.skin) {
 
         item.appendChild(head);
         item.appendChild(playerName);
+      item.style.cursor = "pointer";
+
+item.addEventListener("click", () => {
+    document.getElementById("profile-head").src = head.src;
+    document.getElementById("profile-name").textContent = player.name;
+    document.getElementById("profile-uuid").textContent = player.uuid;
+
+    document.getElementById("player-modal").style.display = "flex";
+});
 
         playerList.appendChild(item);
     });
@@ -1009,9 +1092,35 @@ if (player.skin) {
         playerList.textContent = "Oyuncu listesi alınamadı.";
     }
 }
+const playerModal = document.getElementById("player-modal");
+
+document.getElementById("close-player-modal").addEventListener("click", () => {
+    playerModal.style.display = "none";
+});
+
+playerModal.addEventListener("click", (event) => {
+    if (event.target === playerModal) {
+        playerModal.style.display = "none";
+    }
+});
 
 checkServer();
 setInterval(checkServer, 60000);
 </script>
+
+<!-- Oyuncu Profil Penceresi -->
+<div id="player-modal" class="player-modal">
+    <div class="player-modal-content">
+        <button id="close-player-modal" class="player-modal-close">×</button>
+
+        <img id="profile-head" src="" alt="Oyuncu kafası">
+
+        <h2 id="profile-name">Oyuncu</h2>
+
+        <p>Oyuncu UUID</p>
+        <span id="profile-uuid"></span>
+    </div>
+</div>
+
 </body>
 </html>
