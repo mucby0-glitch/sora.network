@@ -1299,8 +1299,27 @@ async function loadSiteAccount() {
                 accountPlayerName.textContent = data.username;
                 accountPlayerUUID.textContent = data.uuid;
               
-                accountPlayerHead.src = `https://mc-heads.net/avatar/${data.uuid}/72`;
-accountPlayerHead.alt = data.username + " Minecraft kafası";
+                const skinUrl = data.skin
+    ? data.skin.replace(/^http:/, "https:")
+    : null;
+
+if (skinUrl) {
+    accountPlayerHead.style.backgroundImage =
+        `url("${skinUrl}"), url("${skinUrl}")`;
+
+    accountPlayerHead.style.backgroundSize =
+        "576px 576px, 576px 576px";
+
+    accountPlayerHead.style.backgroundPosition =
+        "-360px -72px, -72px -72px";
+
+    accountPlayerHead.style.backgroundRepeat = "no-repeat";
+}
+
+accountPlayerHead.setAttribute(
+    "aria-label",
+    data.username + " Minecraft kafası"
+);
               
                 accountButton.textContent = "👤 " + data.username;
                 return;
@@ -1425,14 +1444,19 @@ loadSiteAccount();
 
         <div id="site-account-profile" hidden>
 
-        <img
+        <div
     id="site-account-player-head"
-    src=""
-    alt="Minecraft oyuncu kafası"
-    width="72"
-    height="72"
-    style="border-radius:12px; image-rendering:pixelated;"
->
+    role="img"
+    aria-label="Minecraft oyuncu kafası"
+    style="
+        width:72px;
+        height:72px;
+        border-radius:12px;
+        image-rendering:pixelated;
+        background-repeat:no-repeat;
+        background-color:#333;
+    "
+></div>
           
     <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
 
