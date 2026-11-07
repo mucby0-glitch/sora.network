@@ -1269,8 +1269,11 @@ const accountCode = document.getElementById("site-account-code");
 const accountStatus = document.getElementById("site-account-status");
 const accountProfile = document.getElementById("site-account-profile");
 const accountPlayerName = document.getElementById("site-account-player-name");
+const accountPlayerUUID = document.getElementById("site-account-player-uuid");
 const accountLogout = document.getElementById("site-account-logout");
 const accountDescription = document.getElementById("site-account-description");
+const accountPlayerHead = document.getElementById("site-account-player-head");
+const accountPlayerName = document.getElementById("site-account-player-name");
 
 function openAccountModal() {
     accountModal.classList.add("active");
@@ -1295,6 +1298,11 @@ async function loadSiteAccount() {
                 accountDescription.hidden = true;
                 accountProfile.hidden = false;
                 accountPlayerName.textContent = data.username;
+                accountPlayerUUID.textContent = data.uuid;
+              
+                accountPlayerHead.src = `https://mc-heads.net/avatar/${data.uuid}/72`;
+accountPlayerHead.alt = data.username + " Minecraft kafası";
+              
                 accountButton.textContent = "👤 " + data.username;
                 return;
             }
@@ -1417,11 +1425,30 @@ loadSiteAccount();
         <div id="site-account-status" role="status"></div>
 
         <div id="site-account-profile" hidden>
-            <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
-            <button type="button" id="site-account-logout">
-                Oturumu Kapat
-            </button>
-        </div>
+
+        <img
+    id="site-account-player-head"
+    src=""
+    alt="Minecraft oyuncu kafası"
+    width="72"
+    height="72"
+    style="border-radius:12px; image-rendering:pixelated;"
+>
+          
+    <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
+
+    <p>
+        Minecraft UUID:
+        <strong id="site-account-player-uuid"></strong>
+    </p>
+
+    <p>Hesap durumu: <strong>Bağlı</strong></p>
+
+    <button type="button" id="site-account-logout">
+        Oturumu Kapat
+    </button>
+</div>
+      
     </div>
 </div>
   
