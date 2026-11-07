@@ -1257,6 +1257,7 @@ playerModal.addEventListener("click", (event) => {
 checkServer();
 setInterval(checkServer, 60000);
 
+    document.addEventListener("DOMContentLoaded", function () {
     // SoraNetwork Hesap Sistemi
 const SITE_API = "https://api.soranetwork.com.tr";
 
@@ -1378,6 +1379,7 @@ accountLogout.addEventListener("click", async function() {
 
 // Sayfa açıldığında oturum kontrolü
 loadSiteAccount();
+      });
     
 </script>
 
