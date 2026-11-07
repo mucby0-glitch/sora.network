@@ -676,6 +676,128 @@ body::after {
         transform: scale(1);
     }
 }
+  /* Hesabım butonu */
+.account-nav-btn {
+    background: rgba(255, 116, 23, .12);
+    color: #ff9a45;
+    border: 1px solid rgba(255, 116, 23, .45);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .25s ease;
+    white-space: nowrap;
+}
+
+.account-nav-btn:hover {
+    background: #ff7417;
+    color: #111;
+    box-shadow: 0 0 18px rgba(255, 116, 23, .3);
+}
+
+@media(max-width:850px) {
+    .account-nav-btn {
+        width: 100%;
+        text-align: left;
+    }
+}
+  /* SoraNetwork Hesap Penceresi */
+.site-account-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, .85);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.site-account-modal.active {
+    display: flex;
+}
+
+.site-account-content {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px;
+    background: #151515;
+    border: 1px solid rgba(255, 116, 23, .5);
+    border-radius: 18px;
+    box-shadow: 0 0 35px rgba(255, 116, 23, .15);
+    color: white;
+}
+
+.site-account-content h2 {
+    color: #ff9a45;
+    margin-bottom: 15px;
+}
+
+.site-account-content p {
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.site-account-content label {
+    display: block;
+    margin: 20px 0 8px;
+    color: #ff9a45;
+}
+
+#site-account-code {
+    width: 100%;
+    padding: 14px;
+    background: #0b0b0b;
+    border: 1px solid #444;
+    border-radius: 8px;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    letter-spacing: 6px;
+    box-sizing: border-box;
+}
+
+#site-account-submit,
+#site-account-logout {
+    width: 100%;
+    margin-top: 15px;
+    padding: 13px;
+    background: #ff7417;
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.site-account-close {
+    position: absolute;
+    top: 12px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#site-account-status {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #ff9a45;
+    text-align: center;
+}
+
+#site-account-profile {
+    margin-top: 20px;
+}
+
+#site-account-profile[hidden] {
+    display: none;
+}
   
 </style>
   <script type="application/ld+json">
@@ -703,6 +825,7 @@ body::after {
       <a href="#staff">Yetkili Kadrosu</a>
       <a href="#rules">Kurallar</a>
       <a href="#news">Duyurular</a>
+            <button type="button" class="account-nav-btn" id="site-account-button">👤 Hesabım</button>
     </nav>
     <a class="nav-cta" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord ↗</a>
     <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç">☰</button>
@@ -1133,6 +1256,172 @@ playerModal.addEventListener("click", (event) => {
 
 checkServer();
 setInterval(checkServer, 60000);
+
+    // SoraNetwork Hesap Sistemi
+const SITE_API = "https://api.soranetwork.com.tr";
+
+const accountModal = document.getElementById("site-account-modal");
+const accountButton = document.getElementById("site-account-button");
+const accountClose = document.getElementById("site-account-close");
+const accountForm = document.getElementById("site-account-form");
+const accountCode = document.getElementById("site-account-code");
+const accountStatus = document.getElementById("site-account-status");
+const accountProfile = document.getElementById("site-account-profile");
+const accountPlayerName = document.getElementById("site-account-player-name");
+const accountLogout = document.getElementById("site-account-logout");
+const accountDescription = document.getElementById("site-account-description");
+
+function openAccountModal() {
+    accountModal.classList.add("active");
+    loadSiteAccount();
+}
+
+function closeAccountModal() {
+    accountModal.classList.remove("active");
+}
+
+async function loadSiteAccount() {
+    try {
+        const response = await fetch(`${SITE_API}/api/site/me`, {
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            if (data.authenticated) {
+                accountForm.hidden = true;
+                accountDescription.hidden = true;
+                accountProfile.hidden = false;
+                accountPlayerName.textContent = data.username;
+                accountButton.textContent = "👤 " + data.username;
+                return;
+            }
+        }
+
+        accountForm.hidden = false;
+        accountDescription.hidden = false;
+        accountProfile.hidden = true;
+        accountButton.textContent = "👤 Hesabım";
+
+    } catch (error) {
+        accountStatus.textContent = "Sunucuya bağlanılamadı.";
+    }
+}
+
+accountButton.addEventListener("click", openAccountModal);
+accountClose.addEventListener("click", closeAccountModal);
+
+accountModal.addEventListener("click", function(event) {
+    if (event.target === accountModal) {
+        closeAccountModal();
+    }
+});
+
+accountForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const code = accountCode.value.trim();
+
+    if (!/^[0-9]{8}$/.test(code)) {
+        accountStatus.textContent = "8 haneli geçerli bir kod gir.";
+        return;
+    }
+
+    const submitButton = document.getElementById("site-account-submit");
+    submitButton.disabled = true;
+    accountStatus.textContent = "Kod doğrulanıyor...";
+
+    try {
+        const response = await fetch(`${SITE_API}/api/site/verify`, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            accountStatus.textContent = data.error || "Kod doğrulanamadı.";
+            return;
+        }
+
+        accountCode.value = "";
+        accountStatus.textContent = "Giriş başarılı!";
+        await loadSiteAccount();
+
+    } catch (error) {
+        accountStatus.textContent = "Bağlantı hatası oluştu.";
+    } finally {
+        submitButton.disabled = false;
+    }
+});
+
+accountLogout.addEventListener("click", async function() {
+    try {
+        const response = await fetch(`${SITE_API}/api/site/logout`, {
+            method: "POST",
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            accountStatus.textContent = "Oturum kapatıldı.";
+            await loadSiteAccount();
+        }
+    } catch (error) {
+        accountStatus.textContent = "Çıkış yapılamadı.";
+    }
+});
+
+// Sayfa açıldığında oturum kontrolü
+loadSiteAccount();
+    
 </script>
+
+  <!-- SoraNetwork Hesap Penceresi -->
+<div id="site-account-modal" class="site-account-modal">
+    <div class="site-account-content">
+        <button type="button" id="site-account-close" class="site-account-close">×</button>
+
+        <h2>SoraNetwork Hesabı</h2>
+
+        <p id="site-account-description">
+            Minecraft oyununda <strong>/site</strong> komutunu kullan.
+            Aldığın 8 haneli kodu buraya gir.
+        </p>
+
+        <form id="site-account-form">
+            <label for="site-account-code">Giriş Kodu</label>
+
+            <input
+                id="site-account-code"
+                type="text"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="8"
+                pattern="[0-9]{8}"
+                placeholder="00000000"
+                required
+            >
+
+            <button type="submit" id="site-account-submit">
+                Hesabı Doğrula
+            </button>
+        </form>
+
+        <div id="site-account-status" role="status"></div>
+
+        <div id="site-account-profile" hidden>
+            <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
+            <button type="button" id="site-account-logout">
+                Oturumu Kapat
+            </button>
+        </div>
+    </div>
+</div>
+  
 </body>
 </html>
