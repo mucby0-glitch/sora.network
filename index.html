@@ -1678,7 +1678,7 @@ async function loadBaltop() {
     const players = Array.isArray(data.players) ? data.players : [];
 
     const skinResponse = await fetch(
-      "https://api.soranetwork.com.tr/api/players",
+      "https://api.soranetwork.com.tr/api/skins",
       { cache: "no-store" }
     );
 
@@ -1693,8 +1693,9 @@ async function loadBaltop() {
       );
 
       if (skinPlayer) {
-        player.uuid = skinPlayer.uuid;
-      }
+  player.uuid = skinPlayer.uuid;
+  player.skin = skinPlayer.skin;
+}
     });
 
     podium.innerHTML = "";
@@ -1721,8 +1722,38 @@ async function loadBaltop() {
   img.className = "baltop-head";
   img.alt = player.name;
   img.loading = "lazy";
-  img.src = "https://mc-heads.net/avatar/" +
-    encodeURIComponent(player.name) + "/" + size;
+
+  const fallback = () => {
+    img.src = "https://crafatar.com/avatars/" +
+      encodeURIComponent(player.uuid || player.name) +
+      "?size=" + size + "&overlay";
+  };
+
+  if (!player.skin) {
+    fallback();
+    return img;
+  }
+
+  const skinImage = new Image();
+  skinImage.crossOrigin = "anonymous";
+
+  skinImage.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 32;
+    canvas.height = 32;
+
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+
+    ctx.drawImage(skinImage, 8, 8, 8, 8, 0, 0, 32, 32);
+    ctx.drawImage(skinImage, 40, 8, 8, 8, 0, 0, 32, 32);
+
+    img.src = canvas.toDataURL("image/png");
+  };
+
+  skinImage.onerror = fallback;
+  skinImage.src = player.skin.replace(/^http:/, "https:");
+
   return img;
 }
 
