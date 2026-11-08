@@ -1697,17 +1697,19 @@ async function loadBaltop() {
       data.currency === "dollar" ? "$" : (data.currency || "");
 
     function createPlayerHead(player, size) {
-      const img = document.createElement("img");
-      img.className = "baltop-head";
-      img.alt = player.name;
-      img.loading = "lazy";
-      img.src =
-        "https://mc-heads.net/avatar/" +
-        encodeURIComponent(player.name) +
-        "/" + size;
-      return img;
-    }
+  const img = document.createElement("img");
+  img.className = "baltop-head";
+  img.alt = player.name;
+  img.loading = "lazy";
 
+  img.src = player.skin
+    ? player.skin.replace("http://", "https://")
+    : "https://mc-heads.net/avatar/" +
+      encodeURIComponent(player.name) +
+      "/" + size;
+
+  return img;
+}
     const podiumOrder = [
       { player: players[1], rank: 2, cls: "second", medal: "🥈" },
       { player: players[0], rank: 1, cls: "first", medal: "🥇" },
