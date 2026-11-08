@@ -1724,11 +1724,10 @@ async function loadBaltop() {
   img.loading = "lazy";
 
   const fallback = () => {
-    img.src = "https://crafatar.com/avatars/" +
-      encodeURIComponent(player.uuid || player.name) +
-      "?size=" + size + "&overlay";
-  };
-
+  img.src = "https://mc-heads.net/avatar/" +
+    encodeURIComponent(player.name) + "/" + size;
+};
+      
   if (!player.skin) {
     fallback();
     return img;
