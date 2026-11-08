@@ -1723,11 +1723,13 @@ players.forEach(player => {
   img.alt = player.name;
   img.loading = "lazy";
 
-  img.src = player.skin
-    ? player.skin.replace("http://", "https://")
-    : "https://mc-heads.net/avatar/" +
-      encodeURIComponent(player.name) +
-      "/" + size;
+  img.src = player.uuid
+    ? `https://mc-heads.net/avatar/${player.uuid}/${size}`
+    : `https://mc-heads.net/avatar/${encodeURIComponent(player.name)}/${size}`;
+
+  img.onerror = () => {
+    img.src = `https://mc-heads.net/avatar/${encodeURIComponent(player.name)}/${size}`;
+  };
 
   return img;
 }
