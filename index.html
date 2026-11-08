@@ -1658,6 +1658,138 @@ loadSiteAccount();
       
     </div>
 </div>
+  <script>
+async function loadBaltop() {
+  const status = document.getElementById("baltop-status");
+  const podium = document.getElementById("baltop-podium");
+  const list = document.getElementById("baltop-list");
+  const updated = document.getElementById("baltop-updated");
+
+  try {
+    const response = await fetch(
+      "https://api.soranetwork.com.tr/api/baltop",
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) throw new Error("API bağlantı hatası");
+
+    const data = await response.json();
+    const players = Array.isArray(data.players) ? data.players : [];
+
+    podium.innerHTML = "";
+    list.innerHTML = "";
+
+    status.textContent = players.length
+      ? `${players.length} oyuncu listeleniyor`
+      : "Henüz sıralama verisi yok.";
+
+    function formatBalance(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return String(value ?? "0");
+
+      return number.toLocaleString("tr-TR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 3
+      });
+    }
+
+    const currencyLabel =
+      data.currency === "dollar" ? "$" : (data.currency || "");
+
+    function createPlayerHead(player, size) {
+      const img = document.createElement("img");
+      img.className = "baltop-head";
+      img.alt = player.name;
+      img.loading = "lazy";
+      img.src =
+        "https://mc-heads.net/avatar/" +
+        encodeURIComponent(player.name) +
+        "/" + size;
+      return img;
+    }
+
+    const podiumOrder = [
+      { player: players[1], rank: 2, cls: "second", medal: "🥈" },
+      { player: players[0], rank: 1, cls: "first", medal: "🥇" },
+      { player: players[2], rank: 3, cls: "third", medal: "🥉" }
+    ];
+
+    podiumOrder.forEach(({ player, rank, cls, medal }) => {
+      if (!player) return;
+
+      const card = document.createElement("article");
+      card.className = `baltop-card ${cls}`;
+
+      const rankEl = document.createElement("div");
+      rankEl.className = "baltop-rank";
+      rankEl.textContent = `${medal} ${rank}. Sıra`;
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "baltop-name";
+      nameEl.textContent = player.name;
+
+      const balance = document.createElement("div");
+      balance.className = "baltop-balance";
+      balance.textContent =
+        `${formatBalance(player.balance)} ${currencyLabel}`;
+
+      card.append(
+        rankEl,
+        createPlayerHead(player, 64),
+        nameEl,
+        balance
+      );
+
+      podium.appendChild(card);
+    });
+
+    players.slice(3, 10).forEach((player, index) => {
+      const row = document.createElement("div");
+      row.className = "baltop-row";
+
+      const rank = document.createElement("div");
+      rank.className = "baltop-rank";
+      rank.textContent = `${index + 4}.`;
+
+      const name = document.createElement("div");
+      name.className = "baltop-name";
+      name.textContent = player.name;
+
+      const balance = document.createElement("div");
+      balance.className = "baltop-balance";
+      balance.textContent =
+        `${formatBalance(player.balance)} ${currencyLabel}`;
+
+      row.append(
+        rank,
+        createPlayerHead(player, 40),
+        name,
+        balance
+      );
+
+      list.appendChild(row);
+    });
+
+    const updateDate = data.updatedAt
+      ? new Date(data.updatedAt)
+      : null;
+
+    updated.textContent =
+      updateDate && !isNaN(updateDate.getTime())
+        ? "Son güncelleme: " + updateDate.toLocaleString("tr-TR")
+        : "Son güncelleme: --";
+
+  } catch (error) {
+    console.error("Baltop yüklenemedi:", error);
+    status.textContent = "Liderlik tablosu şu anda yüklenemiyor.";
+    podium.innerHTML = "";
+    list.innerHTML = "";
+  }
+}
+
+loadBaltop();
+setInterval(loadBaltop, 60000);
+</script>
   
 </body>
 </html>
