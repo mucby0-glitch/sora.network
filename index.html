@@ -1717,15 +1717,14 @@ async function loadBaltop() {
       data.currency === "dollar" ? "$" : (data.currency || "");
 
     function createPlayerHead(player, size) {
-      const img = document.createElement("img");
-      img.className = "baltop-head";
-      img.alt = player.name;
-      img.loading = "lazy";
-      img.src = "https://crafatar.com/avatars/" +
-        encodeURIComponent(player.uuid || player.name) +
-        "?size=" + size + "&overlay";
-      return img;
-    }
+  const img = document.createElement("img");
+  img.className = "baltop-head";
+  img.alt = player.name;
+  img.loading = "lazy";
+  img.src = "https://mc-heads.net/avatar/" +
+    encodeURIComponent(player.name) + "/" + size;
+  return img;
+}
 
     const podiumOrder = [
       { player: players[1], rank: 2, cls: "second", medal: "🥈" },
