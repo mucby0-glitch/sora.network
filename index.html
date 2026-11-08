@@ -1991,6 +1991,7 @@ setInterval(loadBaltop, 60000);
         );
 
         podium.innerHTML = "";
+podium.parentElement.querySelectorAll(".baltop-row").forEach(row => row.remove());
 
         status.textContent = players.length
             ? `${players.length} oyuncu listeleniyor`
