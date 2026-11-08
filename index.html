@@ -1960,15 +1960,31 @@ setInterval(loadBaltop, 60000);
             { cache: "no-store" }
         );
 
-        if (!response.ok) {
-            throw new Error("Playtime API bağlantı hatası");
-        }
+        if (!response.ok) throw new Error("Playtime API hatası");
 
         const data = await response.json();
+        const players = Array.isArray(data.players) ? data.players : [];
 
-        const players = Array.isArray(data.players)
-            ? data.players
+        const skinResponse = await fetch(
+            "https://api.soranetwork.com.tr/api/skins",
+            { cache: "no-store" }
+        );
+
+        const skinData = await skinResponse.json();
+        const skinPlayers = Array.isArray(skinData.players)
+            ? skinData.players
             : [];
+
+        players.forEach(player => {
+            const skinPlayer = skinPlayers.find(
+                p => p.name.toLowerCase() === player.name.toLowerCase()
+            );
+
+            if (skinPlayer) {
+                player.skin = skinPlayer.skin;
+                player.uuid = skinPlayer.uuid;
+            }
+        });
 
         players.sort((a, b) =>
             b.playTimeSeconds - a.playTimeSeconds
@@ -1981,18 +1997,55 @@ setInterval(loadBaltop, 60000);
             : "Henüz oyun süresi verisi yok.";
 
         function formatPlaytime(seconds) {
-            const totalMinutes = Math.floor(seconds / 60);
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const remainingMinutes = minutes % 60;
 
             if (hours >= 24) {
                 const days = Math.floor(hours / 24);
-                const remainingHours = hours % 24;
-
-                return `${days} gün ${remainingHours} saat`;
+                return `${days} gün ${hours % 24} saat`;
             }
 
-            return `${hours} saat ${minutes} dakika`;
+            return `${hours} saat ${remainingMinutes} dakika`;
+        }
+
+        function createPlaytimeHead(player) {
+            const img = document.createElement("img");
+            img.className = "playtime-head";
+            img.alt = player.name;
+            img.loading = "lazy";
+
+            const fallback = () => {
+                img.src = "https://mc-heads.net/avatar/" +
+                    encodeURIComponent(player.name) + "/64";
+            };
+
+            if (!player.skin) {
+                fallback();
+                return img;
+            }
+
+            const skinImage = new Image();
+            skinImage.crossOrigin = "anonymous";
+
+            skinImage.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 32;
+                canvas.height = 32;
+
+                const ctx = canvas.getContext("2d");
+                ctx.imageSmoothingEnabled = false;
+
+                ctx.drawImage(skinImage, 8, 8, 8, 8, 0, 0, 32, 32);
+                ctx.drawImage(skinImage, 40, 8, 8, 8, 0, 0, 32, 32);
+
+                img.src = canvas.toDataURL("image/png");
+            };
+
+            skinImage.onerror = fallback;
+            skinImage.src = player.skin.replace(/^http:/, "https:");
+
+            return img;
         }
 
         const podiumOrder = [
@@ -2011,27 +2064,21 @@ setInterval(loadBaltop, 60000);
             rankEl.className = "playtime-rank";
             rankEl.textContent = `${medal} ${rank}. Sıra`;
 
-            const head = document.createElement("img");
-            head.className = "playtime-head";
-            head.alt = player.name;
-            head.loading = "lazy";
-
-            head.src =
-                "https://mc-heads.net/avatar/" +
-                encodeURIComponent(player.uuid || player.name) +
-                "/64";
-
             const name = document.createElement("div");
             name.className = "playtime-name";
             name.textContent = player.name;
 
             const time = document.createElement("div");
             time.className = "playtime-time";
-            time.textContent = formatPlaytime(
-                player.playTimeSeconds || 0
+            time.textContent = formatPlaytime(player.playTimeSeconds || 0);
+
+            card.append(
+                rankEl,
+                createPlaytimeHead(player),
+                name,
+                time
             );
 
-            card.append(rankEl, head, name, time);
             podium.appendChild(card);
         });
 
