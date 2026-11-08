@@ -958,6 +958,94 @@ body::after {
     flex-direction: column;
   }
 }
+  /* EN AKTİF OYUNCULAR */
+.playtime-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.playtime-card {
+  text-align: center;
+  background: linear-gradient(145deg, #1c1c1c, #101010);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 14px;
+  overflow: hidden;
+}
+
+.playtime-card.first {
+  border-color: rgba(255, 193, 7, .55);
+  padding-top: 32px;
+}
+
+.playtime-card.second {
+  border-color: rgba(190, 200, 210, .35);
+}
+
+.playtime-card.third {
+  border-color: rgba(205, 127, 50, .4);
+}
+
+.playtime-head {
+  width: 58px;
+  height: 58px;
+  image-rendering: pixelated;
+  border-radius: 9px;
+  margin: 0 auto 10px;
+  display: block;
+  background: #222;
+}
+
+.playtime-rank {
+  color: var(--orange-light);
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.playtime-name {
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.playtime-time {
+  color: var(--orange-light);
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+@media(max-width:600px) {
+  .playtime-podium {
+    gap: 8px;
+  }
+
+  .playtime-card {
+    padding: 17px 6px;
+  }
+
+  .playtime-card.first {
+    padding-top: 24px;
+  }
+
+  .playtime-head {
+    width: 45px;
+    height: 45px;
+  }
+
+  .playtime-name {
+    font-size: 12px;
+  }
+
+  .playtime-time {
+    font-size: 11px;
+  }
+}
   
 </style>
   <script type="application/ld+json">
@@ -1090,6 +1178,29 @@ body::after {
       <span id="baltop-updated">Son güncelleme: --</span>
       <span>Otomatik yenileme: 60 saniye</span>
     </div>
+  </div>
+</section>
+
+  <section id="playtime" style="padding-top:0">
+  <div class="container">
+
+    <div class="section-head">
+      <div class="kicker">Toplam Oyun Süresi</div>
+      <h2>🏅 En Aktif Oyuncular</h2>
+      <p>Hub ve Towny sunucularında en çok vakit geçiren oyuncular!</p>
+    </div>
+
+    <div id="playtime-status" class="baltop-status">
+      Aktif oyuncular yükleniyor...
+    </div>
+
+    <div id="playtime-podium" class="playtime-podium"></div>
+
+    <div class="baltop-footer">
+      <span id="playtime-updated">Son güncelleme: --</span>
+      <span>Otomatik yenileme: 60 saniye</span>
+    </div>
+
   </div>
 </section>
 
@@ -1837,6 +1948,111 @@ async function loadBaltop() {
 
 loadBaltop();
 setInterval(loadBaltop, 60000);
+
+    async function loadPlaytime() {
+    const status = document.getElementById("playtime-status");
+    const podium = document.getElementById("playtime-podium");
+    const updated = document.getElementById("playtime-updated");
+
+    try {
+        const response = await fetch(
+            "https://api.soranetwork.com.tr/api/playtime",
+            { cache: "no-store" }
+        );
+
+        if (!response.ok) {
+            throw new Error("Playtime API bağlantı hatası");
+        }
+
+        const data = await response.json();
+
+        const players = Array.isArray(data.players)
+            ? data.players
+            : [];
+
+        players.sort((a, b) =>
+            b.playTimeSeconds - a.playTimeSeconds
+        );
+
+        podium.innerHTML = "";
+
+        status.textContent = players.length
+            ? `${players.length} oyuncu listeleniyor`
+            : "Henüz oyun süresi verisi yok.";
+
+        function formatPlaytime(seconds) {
+            const totalMinutes = Math.floor(seconds / 60);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            if (hours >= 24) {
+                const days = Math.floor(hours / 24);
+                const remainingHours = hours % 24;
+
+                return `${days} gün ${remainingHours} saat`;
+            }
+
+            return `${hours} saat ${minutes} dakika`;
+        }
+
+        const podiumOrder = [
+            { player: players[1], rank: 2, cls: "second", medal: "🥈" },
+            { player: players[0], rank: 1, cls: "first", medal: "🥇" },
+            { player: players[2], rank: 3, cls: "third", medal: "🥉" }
+        ];
+
+        podiumOrder.forEach(({ player, rank, cls, medal }) => {
+            if (!player) return;
+
+            const card = document.createElement("article");
+            card.className = `playtime-card ${cls}`;
+
+            const rankEl = document.createElement("div");
+            rankEl.className = "playtime-rank";
+            rankEl.textContent = `${medal} ${rank}. Sıra`;
+
+            const head = document.createElement("img");
+            head.className = "playtime-head";
+            head.alt = player.name;
+            head.loading = "lazy";
+
+            head.src =
+                "https://mc-heads.net/avatar/" +
+                encodeURIComponent(player.uuid || player.name) +
+                "/64";
+
+            const name = document.createElement("div");
+            name.className = "playtime-name";
+            name.textContent = player.name;
+
+            const time = document.createElement("div");
+            time.className = "playtime-time";
+            time.textContent = formatPlaytime(
+                player.playTimeSeconds || 0
+            );
+
+            card.append(rankEl, head, name, time);
+            podium.appendChild(card);
+        });
+
+        const updateDate = data.updatedAt
+            ? new Date(data.updatedAt)
+            : null;
+
+        updated.textContent =
+            updateDate && !isNaN(updateDate.getTime())
+                ? "Son güncelleme: " + updateDate.toLocaleString("tr-TR")
+                : "Son güncelleme: --";
+
+    } catch (error) {
+        console.error("Oyun süreleri yüklenemedi:", error);
+        status.textContent = "Oyun süreleri şu anda yüklenemiyor.";
+        podium.innerHTML = "";
+    }
+}
+
+loadPlaytime();
+setInterval(loadPlaytime, 60000);
 
 </script>
   
