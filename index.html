@@ -2055,32 +2055,58 @@ setInterval(loadBaltop, 60000);
         ];
 
         podiumOrder.forEach(({ player, rank, cls, medal }) => {
-            if (!player) return;
+    if (!player) return;
 
-            const card = document.createElement("article");
-            card.className = `playtime-card ${cls}`;
+    const card = document.createElement("article");
+    card.className = `playtime-card ${cls}`;
 
-            const rankEl = document.createElement("div");
-            rankEl.className = "playtime-rank";
-            rankEl.textContent = `${medal} ${rank}. Sıra`;
+    const rankEl = document.createElement("div");
+    rankEl.className = "playtime-rank";
+    rankEl.textContent = `${medal} ${rank}. Sıra`;
 
-            const name = document.createElement("div");
-            name.className = "playtime-name";
-            name.textContent = player.name;
+    const name = document.createElement("div");
+    name.className = "playtime-name";
+    name.textContent = player.name;
 
-            const time = document.createElement("div");
-            time.className = "playtime-time";
-            time.textContent = formatPlaytime(player.playTimeSeconds || 0);
+    const time = document.createElement("div");
+    time.className = "playtime-time";
+    time.textContent = formatPlaytime(player.playTimeSeconds || 0);
 
-            card.append(
-                rankEl,
-                createPlaytimeHead(player),
-                name,
-                time
-            );
+    card.append(
+        rankEl,
+        createPlaytimeHead(player),
+        name,
+        time
+    );
 
-            podium.appendChild(card);
-        });
+    podium.appendChild(card);
+});
+
+// İlk 3 dışındaki oyuncular
+players.slice(3).forEach((player, index) => {
+    const row = document.createElement("div");
+    row.className = "baltop-row";
+
+    const rank = document.createElement("div");
+    rank.className = "baltop-rank";
+    rank.textContent = `${index + 4}.`;
+
+    const name = document.createElement("div");
+    name.className = "baltop-name";
+    name.textContent = player.name;
+
+    const time = document.createElement("div");
+    time.className = "baltop-balance";
+    time.textContent = formatPlaytime(player.playTimeSeconds || 0);
+
+    const head = createPlaytimeHead(player);
+    head.style.width = "38px";
+    head.style.height = "38px";
+    head.style.margin = "0";
+
+    row.append(rank, head, name, time);
+    podium.parentElement.appendChild(row);
+});
 
         const updateDate = data.updatedAt
             ? new Date(data.updatedAt)
@@ -2095,6 +2121,7 @@ setInterval(loadBaltop, 60000);
         console.error("Oyun süreleri yüklenemedi:", error);
         status.textContent = "Oyun süreleri şu anda yüklenemiyor.";
         podium.innerHTML = "";
+podium.parentElement.querySelectorAll(".baltop-row").forEach(row => row.remove());
     }
 }
 
