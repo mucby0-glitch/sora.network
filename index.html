@@ -1659,6 +1659,7 @@ loadSiteAccount();
     </div>
 </div>
   <script>
+
 async function loadBaltop() {
   const status = document.getElementById("baltop-status");
   const podium = document.getElementById("baltop-podium");
@@ -1677,25 +1678,24 @@ async function loadBaltop() {
     const players = Array.isArray(data.players) ? data.players : [];
 
     const skinResponse = await fetch(
-  "https://api.soranetwork.com.tr/api/players",
-  { cache: "no-store" }
-);
+      "https://api.soranetwork.com.tr/api/players",
+      { cache: "no-store" }
+    );
 
-const skinData = await skinResponse.json();
-const skinPlayers = Array.isArray(skinData.players)
-  ? skinData.players
-  : [];
+    const skinData = await skinResponse.json();
+    const skinPlayers = Array.isArray(skinData.players)
+      ? skinData.players
+      : [];
 
-players.forEach(player => {
-  const skinPlayer = skinPlayers.find(
-    p => p.name.toLowerCase() === player.name.toLowerCase()
-  );
+    players.forEach(player => {
+      const skinPlayer = skinPlayers.find(
+        p => p.name.toLowerCase() === player.name.toLowerCase()
+      );
 
-  if (skinPlayer) {
-    player.skin = skinPlayer.skin;
-    player.uuid = skinPlayer.uuid;
-  }
-});
+      if (skinPlayer) {
+        player.uuid = skinPlayer.uuid;
+      }
+    });
 
     podium.innerHTML = "";
     list.innerHTML = "";
@@ -1707,7 +1707,6 @@ players.forEach(player => {
     function formatBalance(value) {
       const number = Number(value);
       if (!Number.isFinite(number)) return String(value ?? "0");
-
       return number.toLocaleString("tr-TR", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 3
@@ -1718,20 +1717,16 @@ players.forEach(player => {
       data.currency === "dollar" ? "$" : (data.currency || "");
 
     function createPlayerHead(player, size) {
-  const img = document.createElement("img");
-  img.className = "baltop-head";
-  img.alt = player.name;
-  img.loading = "lazy";
+      const img = document.createElement("img");
+      img.className = "baltop-head";
+      img.alt = player.name;
+      img.loading = "lazy";
+      img.src = "https://crafatar.com/avatars/" +
+        encodeURIComponent(player.uuid || player.name) +
+        "?size=" + size + "&overlay";
+      return img;
+    }
 
-  img.src = "https://crafatar.com/avatars/" +
-    encodeURIComponent(player.uuid || player.name) +
-    "?size=" + size + "&overlay";
-
-  return img;
-}
-
-  return img;
-}
     const podiumOrder = [
       { player: players[1], rank: 2, cls: "second", medal: "🥈" },
       { player: players[0], rank: 1, cls: "first", medal: "🥇" },
@@ -1813,6 +1808,7 @@ players.forEach(player => {
 
 loadBaltop();
 setInterval(loadBaltop, 60000);
+
 </script>
   
 </body>
