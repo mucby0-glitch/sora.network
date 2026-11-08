@@ -1676,6 +1676,27 @@ async function loadBaltop() {
     const data = await response.json();
     const players = Array.isArray(data.players) ? data.players : [];
 
+    const skinResponse = await fetch(
+  "https://api.soranetwork.com.tr/api/players",
+  { cache: "no-store" }
+);
+
+const skinData = await skinResponse.json();
+const skinPlayers = Array.isArray(skinData.players)
+  ? skinData.players
+  : [];
+
+players.forEach(player => {
+  const skinPlayer = skinPlayers.find(
+    p => p.name.toLowerCase() === player.name.toLowerCase()
+  );
+
+  if (skinPlayer) {
+    player.skin = skinPlayer.skin;
+    player.uuid = skinPlayer.uuid;
+  }
+});
+
     podium.innerHTML = "";
     list.innerHTML = "";
 
