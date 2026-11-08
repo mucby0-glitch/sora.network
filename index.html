@@ -798,6 +798,166 @@ body::after {
 #site-account-profile[hidden] {
     display: none;
 }
+  /* SORANETWORK BALT0P TASARIMI */
+#leaderboard {
+  padding-top: 45px;
+}
+
+.baltop-status {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin: -15px 0 24px;
+}
+
+.baltop-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: end;
+  max-width: 900px;
+  margin: 0 auto 25px;
+}
+
+.baltop-card {
+  text-align: center;
+  background: linear-gradient(145deg, #1c1c1c, #101010);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 14px;
+  overflow: hidden;
+}
+
+.baltop-card.first {
+  border-color: rgba(255, 193, 7, .55);
+  box-shadow: 0 0 28px rgba(255, 193, 7, .08);
+  padding-top: 32px;
+}
+
+.baltop-card.second {
+  border-color: rgba(190, 200, 210, .35);
+}
+
+.baltop-card.third {
+  border-color: rgba(205, 127, 50, .4);
+}
+
+.baltop-rank {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--orange-light);
+  margin-bottom: 10px;
+}
+
+.baltop-head {
+  width: 58px;
+  height: 58px;
+  image-rendering: pixelated;
+  border-radius: 9px;
+  margin: 0 auto 10px;
+  display: block;
+  background: #222;
+}
+
+.baltop-name {
+  font-size: 15px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.baltop-balance {
+  color: var(--orange-light);
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+.baltop-list {
+  max-width: 900px;
+  margin: auto;
+  display: grid;
+  gap: 9px;
+}
+
+.baltop-row {
+  display: grid;
+  grid-template-columns: 45px 42px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, .035);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 15px;
+}
+
+.baltop-row .baltop-head {
+  width: 38px;
+  height: 38px;
+  margin: 0;
+}
+
+.baltop-row .baltop-rank {
+  margin: 0;
+  text-align: center;
+}
+
+.baltop-footer {
+  max-width: 900px;
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #888;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .baltop-podium {
+    gap: 8px;
+  }
+
+  .baltop-card {
+    padding: 17px 6px;
+  }
+
+  .baltop-card.first {
+    padding-top: 24px;
+  }
+
+  .baltop-head {
+    width: 45px;
+    height: 45px;
+  }
+
+  .baltop-name {
+    font-size: 12px;
+  }
+
+  .baltop-balance {
+    font-size: 11px;
+  }
+
+  .baltop-row {
+    grid-template-columns: 30px 34px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .baltop-row .baltop-head {
+    width: 32px;
+    height: 32px;
+  }
+
+  .baltop-row .baltop-balance {
+    grid-column: 3;
+    margin-top: -5px;
+  }
+
+  .baltop-footer {
+    flex-direction: column;
+  }
+}
   
 </style>
   <script type="application/ld+json">
@@ -905,6 +1065,29 @@ body::after {
         <p>Tek bir oyun modundan fazlası: gelişen, yenilenen ve oyuncularıyla büyüyen bir topluluk.</p>
         <div class="mode-bottom"><span>SORANETWORK</span><span class="arrow">→</span></div>
       </article>
+    </div>
+  </div>
+</section>
+
+  <section id="leaderboard">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Towny Ekonomisi</div>
+      <h2>🏆 Zenginler Listesi</h2>
+      <p>Sunucumuzun en zengin oyuncularını keşfet ve zirveye yüksel!</p>
+    </div>
+
+    <div id="baltop-status" class="baltop-status">
+      Liderlik tablosu yükleniyor...
+    </div>
+
+    <div id="baltop-podium" class="baltop-podium"></div>
+
+    <div id="baltop-list" class="baltop-list"></div>
+
+    <div class="baltop-footer">
+      <span id="baltop-updated">Son güncelleme: --</span>
+      <span>Otomatik yenileme: 60 saniye</span>
     </div>
   </div>
 </section>
