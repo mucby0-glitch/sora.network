@@ -1561,6 +1561,96 @@ nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.cl
 </div>
 
   <script>
+      
+async function loadPlayerProfile(name, uuid) {
+    const set = (id, value) => {
+        document.getElementById(id).textContent = value;
+    };
+
+    set("profile-playtime", "Yükleniyor...");
+    set("profile-balance", "Yükleniyor...");
+    set("profile-ranking", "Yükleniyor...");
+    set("profile-rank", "Henüz eklenmedi");
+    set("profile-town", "Henüz eklenmedi");
+    set("profile-status", "Oyuncu Profili");
+
+    try {
+        const [playResponse, baltopResponse] = await Promise.all([
+            fetch("https://api.soranetwork.com.tr/api/playtime"),
+            fetch("https://api.soranetwork.com.tr/api/baltop")
+        ]);
+
+        if (!playResponse.ok || !baltopResponse.ok) {
+            throw new Error("API bağlantı hatası");
+        }
+
+        const playData = await playResponse.json();
+        const baltopData = await baltopResponse.json();
+
+        const playPlayers = playData.players || [];
+        const baltopPlayers = baltopData.players || [];
+
+        const playerTime = playPlayers.find(
+            p => p.name.toLowerCase() === name.toLowerCase()
+        );
+
+        const playerBalance = baltopPlayers.find(
+            p => p.name.toLowerCase() === name.toLowerCase()
+        );
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+
+            if (hours >= 24) {
+                return `${Math.floor(hours / 24)} gün ${hours % 24} saat`;
+            }
+
+            return `${hours} saat ${minutes} dakika`;
+        }
+
+        if (playerTime) {
+            set("profile-playtime", formatTime(playerTime.playTimeSeconds));
+
+            const sorted = [...playPlayers].sort(
+                (a, b) => b.playTimeSeconds - a.playTimeSeconds
+            );
+
+            const position = sorted.findIndex(
+                p => p.name.toLowerCase() === name.toLowerCase()
+            );
+
+            set("profile-ranking", position >= 0 ? `#${position + 1}` : "-");
+        } else {
+            set("profile-playtime", "Veri bulunamadı");
+            set("profile-ranking", "-");
+        }
+
+        if (playerBalance) {
+            const balance = Number(playerBalance.balance);
+            const currency = baltopData.currency === "dollar"
+                ? "$"
+                : (baltopData.currency || "");
+
+            set(
+                "profile-balance",
+                Number.isFinite(balance)
+                    ? balance.toLocaleString("tr-TR") + " " + currency
+                    : "Veri bulunamadı"
+            );
+        } else {
+            set("profile-balance", "Veri bulunamadı");
+        }
+
+    } catch (error) {
+        console.error("Oyuncu profili yüklenemedi:", error);
+
+        set("profile-playtime", "Yüklenemedi");
+        set("profile-balance", "Yüklenemedi");
+        set("profile-ranking", "Yüklenemedi");
+    }
+}
+            
 async function checkServer() {
     const status = document.getElementById("server-status");
     const players = document.getElementById("server-players");
@@ -1642,9 +1732,11 @@ if (player.skin) {
 item.addEventListener("click", () => {
     document.getElementById("profile-head").src = head.src;
     document.getElementById("profile-name").textContent = player.name;
-    document.getElementById("profile-uuid").textContent = player.uuid;
+    document.getElementById("profile-uuid").textContent = player.uuid || "Bilinmiyor";
 
     document.getElementById("player-modal").style.display = "flex";
+
+    loadPlayerProfile(player.name, player.uuid);
 });
 
         playerList.appendChild(item);
