@@ -690,6 +690,78 @@ body::after {
     }
 }
 
+/* Oyuncu Profil İstatistikleri */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-status {
+    color: #ff851b;
+    font-size: 13px;
+    margin-bottom: 25px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.profile-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 10px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 130, 30, 0.18);
+    border-radius: 13px;
+}
+
+.profile-stat-icon {
+    font-size: 23px;
+}
+
+.profile-stat-label {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.profile-stat-card strong {
+    color: #ff851b;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+}
+
+.profile-extra,
+.profile-uuid-box {
+    padding: 15px;
+    margin-top: 12px;
+    background: rgba(255, 255, 255, 0.035);
+    border-radius: 12px;
+    overflow-wrap: anywhere;
+}
+
+.profile-extra p,
+.profile-uuid-box p {
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.profile-extra strong {
+    color: white;
+}
+
+@media (max-width: 400px) {
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+}
+    
   /* Hesabım butonu */
 .account-nav-btn {
     background: rgba(255, 116, 23, .12);
@@ -1430,19 +1502,64 @@ const nav=document.getElementById('navigation');
 toggle.addEventListener('click',()=>nav.classList.toggle('open'));
 nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
 </script>
-  <!-- Oyuncu Profil Penceresi -->
+ 
+<!-- Oyuncu Profil Penceresi -->
 <div id="player-modal" class="player-modal">
     <div class="player-modal-content">
+
         <button id="close-player-modal" class="player-modal-close">×</button>
 
-        <img id="profile-head" src="" alt="Oyuncu kafası">
+        <div class="profile-header">
+            <img id="profile-head" src="" alt="Oyuncu kafası">
 
-        <h2 id="profile-name">Oyuncu</h2>
+            <h2 id="profile-name">Oyuncu</h2>
 
-        <p>Oyuncu UUID</p>
-        <span id="profile-uuid"></span>
+            <span id="profile-status" class="profile-status">
+                Oyuncu Profili
+            </span>
+        </div>
+
+        <div class="profile-stats">
+
+            <div class="profile-stat-card">
+                <span class="profile-stat-icon">⏱️</span>
+                <span class="profile-stat-label">Toplam Oyun Süresi</span>
+                <strong id="profile-playtime">Yükleniyor...</strong>
+            </div>
+
+            <div class="profile-stat-card">
+                <span class="profile-stat-icon">💰</span>
+                <span class="profile-stat-label">Bakiye</span>
+                <strong id="profile-balance">Yükleniyor...</strong>
+            </div>
+
+            <div class="profile-stat-card">
+                <span class="profile-stat-icon">🏆</span>
+                <span class="profile-stat-label">Oyun Süresi Sırası</span>
+                <strong id="profile-ranking">Yükleniyor...</strong>
+            </div>
+
+            <div class="profile-stat-card">
+                <span class="profile-stat-icon">🛡️</span>
+                <span class="profile-stat-label">Rütbe</span>
+                <strong id="profile-rank">Yükleniyor...</strong>
+            </div>
+
+        </div>
+
+        <div class="profile-extra">
+            <p>Kasaba Bilgileri</p>
+            <strong id="profile-town">Yükleniyor...</strong>
+        </div>
+
+        <div class="profile-uuid-box">
+            <p>Oyuncu UUID</p>
+            <span id="profile-uuid"></span>
+        </div>
+
     </div>
 </div>
+
   <script>
 async function checkServer() {
     const status = document.getElementById("server-status");
