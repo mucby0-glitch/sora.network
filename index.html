@@ -1570,7 +1570,7 @@ async function loadPlayerProfile(name, uuid) {
     set("profile-playtime", "Yükleniyor...");
     set("profile-balance", "Yükleniyor...");
     set("profile-ranking", "Yükleniyor...");
-    set("profile-rank", "Henüz eklenmedi");
+    set("profile-rank", "Yükleniyor...");
     set("profile-town", "Henüz eklenmedi");
     set("profile-status", "Oyuncu Profili");
 
@@ -1590,6 +1590,13 @@ async function loadPlayerProfile(name, uuid) {
         const rankData = await rankResponse.json();
         const playPlayers = playData.players || [];
         const baltopPlayers = baltopData.players || [];
+        const rankPlayers = rankData.players || [];
+
+const playerRank = rankPlayers.find(
+    p => p.uuid === uuid
+);
+
+set("profile-rank", playerRank ? playerRank.displayName : "Veri bulunamadı");
 
         const playerTime = playPlayers.find(
             p => p.name.toLowerCase() === name.toLowerCase()
