@@ -1575,18 +1575,19 @@ async function loadPlayerProfile(name, uuid) {
     set("profile-status", "Oyuncu Profili");
 
     try {
-        const [playResponse, baltopResponse] = await Promise.all([
-            fetch("https://api.soranetwork.com.tr/api/playtime"),
-            fetch("https://api.soranetwork.com.tr/api/baltop")
-        ]);
-
-        if (!playResponse.ok || !baltopResponse.ok) {
-            throw new Error("API bağlantı hatası");
-        }
+        const [playResponse, baltopResponse, rankResponse] = await Promise.all([
+    fetch("https://api.soranetwork.com.tr/api/playtime"),
+    fetch("https://api.soranetwork.com.tr/api/baltop"),
+    fetch("https://api.soranetwork.com.tr/api/ranks")
+]);
+      
+        if (!playResponse.ok || !baltopResponse.ok || !rankResponse.ok) {
+    throw new Error("API bağlantı hatası");
+}
 
         const playData = await playResponse.json();
         const baltopData = await baltopResponse.json();
-
+        const rankData = await rankResponse.json();
         const playPlayers = playData.players || [];
         const baltopPlayers = baltopData.players || [];
 
