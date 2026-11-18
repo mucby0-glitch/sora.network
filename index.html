@@ -602,13 +602,15 @@ body::after {
     color: var(--muted);
     line-height: 1.7;
 }
-/* Oyuncu Profil Penceresi */
+
+/* Gelişmiş Oyuncu Profil Penceresi */
 .player-modal {
     display: none;
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(8px);
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -617,44 +619,49 @@ body::after {
 .player-modal-content {
     position: relative;
     width: 100%;
-    max-width: 360px;
-    padding: 35px 25px;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 35px;
     text-align: center;
-    background: #151515;
-    border: 1px solid rgba(255, 130, 30, 0.5);
-    border-radius: 18px;
-    box-shadow: 0 0 35px rgba(255, 115, 0, 0.2);
+    background: linear-gradient(145deg, #1c1c1c, #101010);
+    border: 1px solid rgba(255, 130, 30, 0.45);
+    border-radius: 22px;
+    box-shadow: 0 0 50px rgba(255, 115, 0, 0.18);
     animation: profileOpen 0.25s ease;
 }
 
 .player-modal-content h2 {
     color: #ff851b;
-    margin: 15px 0;
+    font-size: 27px;
+    margin: 15px 0 8px;
 }
 
 .player-modal-content p {
     color: #aaa;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 #profile-uuid {
-    color: #ddd;
-    font-size: 12px;
+    color: #777;
+    font-size: 11px;
     overflow-wrap: anywhere;
 }
 
 #profile-head {
-    width: 96px;
-    height: 96px;
+    width: 110px;
+    height: 110px;
     image-rendering: pixelated;
-    border-radius: 12px;
+    border-radius: 16px;
     background: #222;
+    border: 2px solid rgba(255, 130, 30, 0.55);
+    box-shadow: 0 0 25px rgba(255, 115, 0, 0.2);
 }
 
 .player-modal-close {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 12px;
+    right: 18px;
     background: transparent;
     border: none;
     color: white;
@@ -669,13 +676,20 @@ body::after {
 @keyframes profileOpen {
     from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.92);
     }
     to {
         opacity: 1;
         transform: scale(1);
     }
 }
+
+@media (max-width: 500px) {
+    .player-modal-content {
+        padding: 28px 18px;
+    }
+}
+
   /* Hesabım butonu */
 .account-nav-btn {
     background: rgba(255, 116, 23, .12);
