@@ -1133,6 +1133,53 @@ body::after {
   }
 }
   
+
+/* SoraNetwork 3D Harita */
+.map-frame-wrap {
+    width: 100%;
+    height: min(72vh, 760px);
+    min-height: 480px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 116, 23, .38);
+    border-radius: 16px;
+    background: #101010;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, .4),
+                0 0 28px rgba(255, 116, 23, .08);
+}
+.map-frame-wrap iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #101010;
+}
+.map-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+.map-actions span {
+    color: var(--muted);
+    font-size: 12px;
+}
+@media (max-width: 600px) {
+    .map-frame-wrap {
+        height: 65vh;
+        min-height: 420px;
+        border-radius: 11px;
+    }
+    .map-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .map-actions .btn {
+        width: 100%;
+    }
+}
+
 </style>
   <script type="application/ld+json">
 {
@@ -1155,6 +1202,7 @@ body::after {
     <nav id="navigation">
       <a href="#home">Ana Sayfa</a>
       <a href="#modes">Oyun Modları</a>
+      <a href="#map">Harita</a>
       <a href="#leaderboard">Liderlik Tablosu</a>
       <a href="#store">Mağaza</a>
       <a href="#staff">Yetkili Kadrosu</a>
@@ -1240,6 +1288,33 @@ body::after {
         <p>Tek bir oyun modundan fazlası: gelişen, yenilenen ve oyuncularıyla büyüyen bir topluluk.</p>
         <div class="mode-bottom"><span>SORANETWORK</span><span class="arrow">→</span></div>
       </article>
+    </div>
+  </div>
+</section>
+
+<section id="map">
+  <div class="container">
+    <div class="section-head">
+      <div class="kicker">Canlı dünya haritası</div>
+      <h2>🗺️ SoraNetwork 3D Harita</h2>
+      <p>SoraNetwork dünyasını keşfet, yakınlaştır ve haritayı döndürerek farklı açılardan incele.</p>
+    </div>
+
+    <div class="map-frame-wrap">
+      <iframe
+        src="https://map.soranetwork.com.tr"
+        title="SoraNetwork Minecraft 3D Haritası"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+    </div>
+
+    <div class="map-actions">
+      <span>Harita yeni bir sekmede de açılabilir.</span>
+      <a class="btn btn-primary" href="https://map.soranetwork.com.tr" target="_blank" rel="noopener">
+        Haritayı Tam Ekran Aç ↗
+      </a>
     </div>
   </div>
 </section>
