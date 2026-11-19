@@ -1230,6 +1230,20 @@ body::after {
   header .nav-cta { min-width: 92px; padding: 11px 12px; }
 }
 
+
+/* SORANETWORK MULTI-PAGE LAYOUT */
+body[data-page] main > section { display: none; }
+body[data-page="home"] main > #home,
+body[data-page="home"] main > #modes,
+body[data-page="home"] main > #join,
+body[data-page="leaderboard"] main > #leaderboard,
+body[data-page="leaderboard"] main > #playtime,
+body[data-page="store"] main > #store,
+body[data-page="news"] main > #news,
+body[data-page="map"] main > #map,
+body[data-page="rules"] main > #rules,
+body[data-page="staff"] main > #staff { display: block; }
+body[data-page] main { min-height: 65vh; }
 </style>
   <script type="application/ld+json">
 {
@@ -1242,22 +1256,22 @@ body::after {
 </script>
   
 </head>
-<body>
+<body data-page="home">
 <header>
   <div class="container nav">
-    <a class="brand" href="#home" aria-label="SoraNetwork ana sayfa">
+    <a class="brand" href="index.html#home" aria-label="SoraNetwork ana sayfa">
       <img src="sora-logo.webp" alt="SoraNetwork tilki amblemi">
       <div>SORA<span>NETWORK</span></div>
     </a>
     <nav id="navigation">
-      <a href="#home">Ana Sayfa</a>
-      <a href="#modes">Oyun Modları</a>
-      <a href="#map">Harita</a>
-      <a href="#leaderboard">Liderlik Tablosu</a>
-      <a href="#store">Mağaza</a>
-      <a href="#staff">Yetkili Kadrosu</a>
-      <a href="#rules">Kurallar</a>
-      <a href="#news">Duyurular</a>
+      <a href="index.html#home">Ana Sayfa</a>
+      <a href="index.html#modes">Oyun Modları</a>
+      <a href="harita.html">Harita</a>
+      <a href="liderlik.html">Liderlik Tablosu</a>
+      <a href="magaza.html">Mağaza</a>
+      <a href="yetkililer.html">Yetkili Kadrosu</a>
+      <a href="kurallar.html">Kurallar</a>
+      <a href="duyurular.html">Duyurular</a>
             <button type="button" class="account-nav-btn" id="site-account-button">👤 Hesabım</button>
     </nav>
     <a class="nav-cta" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord ↗</a>
@@ -1273,7 +1287,7 @@ body::after {
       <h1>SORA<span>NETWORK</span></h1>
       <p class="hero-copy">Yeni dünyalar, unutulmaz maceralar ve güçlü bir topluluk. Kendi hikâyeni yazacağın yer: SoraNetwork.</p>
       <div class="actions">
-  <a class="btn btn-primary" href="#modes">Sunucumuzu keşfet <span>→</span></a>
+  <a class="btn btn-primary" href="index.html#modes">Sunucumuzu keşfet <span>→</span></a>
   <a class="btn btn-outline" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord'a katıl</a>
 </div>
       <div class="quick-info">
@@ -1419,7 +1433,7 @@ body::after {
   <div class="container">
     <div class="banner">
       <div><div class="kicker">SoraNetwork mağaza</div><h2>Destek ol, birlikte büyüyelim.</h2><p>Mağaza ve destek paketleri hakkındaki bilgiler yakında burada.</p></div>
-      <a class="btn btn-primary" href="#store">Çok yakında</a>
+      <a class="btn btn-primary" href="magaza.html">Çok yakında</a>
     </div>
   </div>
 </section>
