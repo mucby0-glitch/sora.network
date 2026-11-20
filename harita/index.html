@@ -1244,6 +1244,22 @@ body[data-page="map"] main > #map,
 body[data-page="rules"] main > #rules,
 body[data-page="staff"] main > #staff { display: block; }
 body[data-page] main { min-height: 65vh; }
+
+  /* HARİTA TAM EKRAN */
+#map-frame-wrap:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  margin: 0;
+  padding: 0;
+}
+
+#map-frame-wrap:fullscreen iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+  
 </style>
   <script type="application/ld+json">
 {
@@ -1363,23 +1379,23 @@ body[data-page] main { min-height: 65vh; }
       <h2>🗺️ SoraNetwork 3D Harita</h2>
       <p>SoraNetwork dünyasını keşfet, yakınlaştır ve haritayı döndürerek farklı açılardan incele.</p>
     </div>
+    
+<div class="map-frame-wrap" id="map-frame-wrap">
+  <iframe
+    src="https://map.soranetwork.com.tr"
+    title="SoraNetwork Minecraft 3D Haritası"
+    loading="lazy"
+    allowfullscreen
+    referrerpolicy="strict-origin-when-cross-origin">
+  </iframe>
+</div>
 
-    <div class="map-frame-wrap">
-      <iframe
-        src="https://map.soranetwork.com.tr"
-        title="SoraNetwork Minecraft 3D Haritası"
-        loading="lazy"
-        allowfullscreen
-        referrerpolicy="strict-origin-when-cross-origin">
-      </iframe>
-    </div>
-
-    <div class="map-actions">
-      <span>Harita yeni bir sekmede de açılabilir.</span>
-      <a class="btn btn-primary" href="https://map.soranetwork.com.tr" target="_blank" rel="noopener">
-        Haritayı Tam Ekran Aç ↗
-      </a>
-    </div>
+<div class="map-actions">
+  <span>Haritayı aynı sayfada tam ekran görüntüleyebilirsin.</span>
+  <button class="btn btn-primary" type="button" onclick="toggleMapFullscreen()">
+    Haritayı Tam Ekran Yap
+  </button>
+</div>
   </div>
 </section>
 
@@ -2499,6 +2515,18 @@ podium.parentElement.querySelectorAll(".baltop-row").forEach(row => row.remove()
 loadPlaytime();
 setInterval(loadPlaytime, 60000);
 
+</script>
+
+  <script>
+function toggleMapFullscreen() {
+  const map = document.getElementById("map-frame-wrap");
+
+  if (!document.fullscreenElement) {
+    map.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
 </script>
   
 </body>
