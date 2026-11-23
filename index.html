@@ -800,53 +800,43 @@ body::after {
     justify-content: center;
     padding: 20px;
 }
-
-.site-account-modal.active {
-    display: flex;
-}
-
+.site-account-modal.active { display: flex; }
 .site-account-content {
     position: relative;
     width: 100%;
-    max-width: 420px;
-    padding: 35px;
+    max-width: 460px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 32px;
     background: #151515;
     border: 1px solid rgba(255, 116, 23, .5);
     border-radius: 18px;
     box-shadow: 0 0 35px rgba(255, 116, 23, .15);
     color: white;
+    box-sizing: border-box;
 }
-
-.site-account-content h2 {
-    color: #ff9a45;
-    margin-bottom: 15px;
-}
-
-.site-account-content p {
-    color: #ccc;
-    line-height: 1.6;
-}
-
+.site-account-content h2 { color: #ff9a45; margin: 0 35px 14px 0; }
+.site-account-content p { color: #ccc; line-height: 1.6; }
 .site-account-content label {
     display: block;
-    margin: 20px 0 8px;
+    margin: 14px 0 7px;
     color: #ff9a45;
+    font-size: 14px;
 }
-
-#site-account-code {
+.site-account-content input {
     width: 100%;
-    padding: 14px;
+    padding: 12px 13px;
     background: #0b0b0b;
     border: 1px solid #444;
     border-radius: 8px;
     color: white;
-    font-size: 22px;
-    text-align: center;
-    letter-spacing: 6px;
+    font-size: 15px;
     box-sizing: border-box;
+    outline: none;
 }
-
-#site-account-submit,
+.site-account-content input:focus { border-color: #ff7417; box-shadow: 0 0 0 2px rgba(255,116,23,.12); }
+.site-account-content button[type="submit"],
+.site-account-content .account-primary,
 #site-account-logout {
     width: 100%;
     margin-top: 15px;
@@ -858,31 +848,39 @@ body::after {
     font-weight: 800;
     cursor: pointer;
 }
-
+.site-account-content button:disabled { opacity: .6; cursor: wait; }
 .site-account-close {
     position: absolute;
-    top: 12px;
-    right: 15px;
+    top: 10px;
+    right: 14px;
     background: none;
     border: none;
     color: white;
     font-size: 28px;
     cursor: pointer;
 }
-
 #site-account-status {
-    margin-top: 15px;
+    margin-top: 14px;
+    min-height: 20px;
     font-size: 13px;
     color: #ff9a45;
     text-align: center;
 }
-
-#site-account-profile {
-    margin-top: 20px;
+.account-switches { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 16px; margin-top: 16px; }
+.account-switches button {
+    padding: 4px 0;
+    background: none;
+    border: 0;
+    color: #ff9a45;
+    cursor: pointer;
+    font-size: 13px;
 }
-
-#site-account-profile[hidden] {
-    display: none;
+.account-view[hidden], #site-account-profile[hidden] { display: none !important; }
+#site-account-profile { margin-top: 20px; text-align: center; }
+#site-account-player-head { margin: 0 auto 14px; }
+.account-help { font-size: 13px; color: #aaa !important; }
+@media(max-width:520px) {
+    .site-account-content { padding: 26px 20px; }
 }
   /* SORANETWORK BALT0P TASARIMI */
 #leaderboard {
@@ -1938,221 +1936,304 @@ playerModal.addEventListener("click", (event) => {
 checkServer();
 setInterval(checkServer, 60000);
 
-    document.addEventListener("DOMContentLoaded", function () {
-    // SoraNetwork Hesap Sistemi
-const SITE_API = "https://api.soranetwork.com.tr";
+document.addEventListener("DOMContentLoaded", function () {
+    const SITE_API = "https://api.soranetwork.com.tr";
+    const accountModal = document.getElementById("site-account-modal");
+    const accountButton = document.getElementById("site-account-button");
+    const accountClose = document.getElementById("site-account-close");
+    const accountStatus = document.getElementById("site-account-status");
+    const accountProfile = document.getElementById("site-account-profile");
+    const accountPlayerName = document.getElementById("site-account-player-name");
+    const accountPlayerUUID = document.getElementById("site-account-player-uuid");
+    const accountLogout = document.getElementById("site-account-logout");
+    const accountPlayerHead = document.getElementById("site-account-player-head");
+    const views = {
+        login: document.getElementById("account-view-login"),
+        register: document.getElementById("account-view-register"),
+        verify: document.getElementById("account-view-verify"),
+        forgot: document.getElementById("account-view-forgot"),
+        reset: document.getElementById("account-view-reset")
+    };
+    let pendingEmail = "";
 
-const accountModal = document.getElementById("site-account-modal");
-const accountButton = document.getElementById("site-account-button");
-const accountClose = document.getElementById("site-account-close");
-const accountForm = document.getElementById("site-account-form");
-const accountCode = document.getElementById("site-account-code");
-const accountStatus = document.getElementById("site-account-status");
-const accountProfile = document.getElementById("site-account-profile");
-const accountPlayerName = document.getElementById("site-account-player-name");
-const accountPlayerUUID = document.getElementById("site-account-player-uuid");
-const accountLogout = document.getElementById("site-account-logout");
-const accountDescription = document.getElementById("site-account-description");
-const accountPlayerHead = document.getElementById("site-account-player-head");
+    async function apiRequest(endpoint, body) {
+        const options = { method: body ? "POST" : "GET", credentials: "include" };
+        if (body) {
+            options.headers = { "Content-Type": "application/json" };
+            options.body = JSON.stringify(body);
+        }
+        const response = await fetch(SITE_API + endpoint, options);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "İşlem gerçekleştirilemedi.");
+        return data;
+    }
 
-function openAccountModal() {
-    accountModal.classList.add("active");
-    loadSiteAccount();
-}
+    function showView(name) {
+        Object.values(views).forEach(view => { view.hidden = true; });
+        if (views[name]) views[name].hidden = false;
+        accountProfile.hidden = true;
+        accountStatus.textContent = "";
+    }
 
-function closeAccountModal() {
-    accountModal.classList.remove("active");
-}
+    function setStatus(message) {
+        accountStatus.textContent = message || "";
+    }
 
-async function loadSiteAccount() {
-    try {
-        const response = await fetch(`${SITE_API}/api/site/me`, {
-            credentials: "include"
-        });
+    function setBusy(form, busy) {
+        const button = form.querySelector('button[type="submit"]');
+        if (button) button.disabled = busy;
+    }
 
-        if (response.ok) {
+    async function loadPlayerDetails(username) {
+        accountPlayerUUID.textContent = "Çevrimiçi olduğunda görüntülenir";
+        accountPlayerHead.style.backgroundImage = "none";
+        try {
+            const response = await fetch(SITE_API + "/api/players", { cache: "no-store" });
+            if (!response.ok) return;
             const data = await response.json();
+            const players = Array.isArray(data) ? data : (data.players || []);
+            const player = players.find(item => item.name && item.name.toLowerCase() === username.toLowerCase());
+            if (!player) return;
+            if (player.uuid) accountPlayerUUID.textContent = player.uuid;
+            const skinUrl = player.skin ? player.skin.replace(/^http:/, "https:") : "";
+            if (skinUrl) {
+                accountPlayerHead.style.backgroundImage = 'url("' + skinUrl + '"), url("' + skinUrl + '")';
+                accountPlayerHead.style.backgroundSize = "576px 576px, 576px 576px";
+                accountPlayerHead.style.backgroundPosition = "-360px -72px, -72px -72px";
+                accountPlayerHead.style.backgroundRepeat = "no-repeat";
+            }
+        } catch (error) {
+            // Profil girişi, oyuncu görünümü API'si geçici olarak erişilemese de çalışır.
+        }
+    }
 
+    async function loadSiteAccount() {
+        try {
+            const data = await apiRequest("/api/account/me");
             if (data.authenticated) {
-                accountForm.hidden = true;
-                accountDescription.hidden = true;
+                Object.values(views).forEach(view => { view.hidden = true; });
                 accountProfile.hidden = false;
-                accountPlayerName.textContent = data.username;
-                accountPlayerUUID.textContent = data.uuid;
-              
-                const skinUrl = data.skin
-    ? data.skin.replace(/^http:/, "https:")
-    : null;
-
-if (skinUrl) {
-    accountPlayerHead.style.backgroundImage =
-        `url("${skinUrl}"), url("${skinUrl}")`;
-
-    accountPlayerHead.style.backgroundSize =
-        "576px 576px, 576px 576px";
-
-    accountPlayerHead.style.backgroundPosition =
-        "-360px -72px, -72px -72px";
-
-    accountPlayerHead.style.backgroundRepeat = "no-repeat";
-}
-
-accountPlayerHead.setAttribute(
-    "aria-label",
-    data.username + " Minecraft kafası"
-);
-              
-                accountButton.textContent = "👤 " + data.username;
+                accountPlayerName.textContent = data.username || "";
+                document.getElementById("site-account-email").textContent = data.email || "";
+                accountButton.textContent = "👤 " + (data.username || "Hesabım");
+                await loadPlayerDetails(data.username || "");
                 return;
             }
+        } catch (error) {
+            // Oturum yoksa giriş ekranı gösterilir.
         }
-
-        accountForm.hidden = false;
-        accountDescription.hidden = false;
         accountProfile.hidden = true;
         accountButton.textContent = "👤 Hesabım";
-
-    } catch (error) {
-        accountStatus.textContent = "Sunucuya bağlanılamadı.";
-    }
-}
-
-accountButton.addEventListener("click", openAccountModal);
-accountClose.addEventListener("click", closeAccountModal);
-
-accountModal.addEventListener("click", function(event) {
-    if (event.target === accountModal) {
-        closeAccountModal();
-    }
-});
-
-accountForm.addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const code = accountCode.value.trim();
-
-    if (!/^[0-9]{8}$/.test(code)) {
-        accountStatus.textContent = "8 haneli geçerli bir kod gir.";
-        return;
+        showView("login");
     }
 
-    const submitButton = document.getElementById("site-account-submit");
-    submitButton.disabled = true;
-    accountStatus.textContent = "Kod doğrulanıyor...";
-
-    try {
-        const response = await fetch(`${SITE_API}/api/site/verify`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ code })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            accountStatus.textContent = data.error || "Kod doğrulanamadı.";
-            return;
-        }
-
-        accountCode.value = "";
-        accountStatus.textContent = "Giriş başarılı!";
-        await loadSiteAccount();
-
-    } catch (error) {
-        accountStatus.textContent = "Bağlantı hatası oluştu.";
-    } finally {
-        submitButton.disabled = false;
+    function openAccountModal() {
+        accountModal.classList.add("active");
+        loadSiteAccount();
     }
-});
+    function closeAccountModal() { accountModal.classList.remove("active"); }
 
-accountLogout.addEventListener("click", async function() {
-    try {
-        const response = await fetch(`${SITE_API}/api/site/logout`, {
-            method: "POST",
-            credentials: "include"
-        });
+    accountButton.addEventListener("click", openAccountModal);
+    accountClose.addEventListener("click", closeAccountModal);
+    accountModal.addEventListener("click", event => {
+        if (event.target === accountModal) closeAccountModal();
+    });
 
-        if (response.ok) {
-            accountStatus.textContent = "Oturum kapatıldı.";
+    document.querySelectorAll("[data-account-view]").forEach(button => {
+        button.addEventListener("click", () => showView(button.dataset.accountView));
+    });
+
+    document.getElementById("account-login-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+        setStatus("Giriş yapılıyor...");
+        try {
+            const data = await apiRequest("/api/account/login", {
+                identity: document.getElementById("account-login-identity").value.trim(),
+                password: document.getElementById("account-login-password").value
+            });
+            setStatus("Giriş başarılı.");
             await loadSiteAccount();
-        }
-    } catch (error) {
-        accountStatus.textContent = "Çıkış yapılamadı.";
-    }
-});
+        } catch (error) {
+            setStatus(error.message);
+        } finally { setBusy(form, false); }
+    });
 
-// Sayfa açıldığında oturum kontrolü
-loadSiteAccount();
-      });
+    document.getElementById("account-register-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+        setStatus("Hesabın oluşturuluyor...");
+        const email = document.getElementById("account-register-email").value.trim();
+        try {
+            await apiRequest("/api/account/register", {
+                email,
+                username: document.getElementById("account-register-username").value.trim(),
+                password: document.getElementById("account-register-password").value,
+                linkTicket: document.getElementById("account-register-ticket").value.trim()
+            });
+            pendingEmail = email;
+            document.getElementById("account-verify-email").value = email;
+            showView("verify");
+            setStatus("Doğrulama kodu e-posta adresine gönderildi.");
+        } catch (error) {
+            setStatus(error.message);
+        } finally { setBusy(form, false); }
+    });
+
+    document.getElementById("account-verify-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+        setStatus("E-posta doğrulanıyor...");
+        const email = document.getElementById("account-verify-email").value.trim();
+        try {
+            await apiRequest("/api/account/verify-email", {
+                email,
+                code: document.getElementById("account-verify-code").value.trim()
+            });
+            document.getElementById("account-login-identity").value = email;
+            showView("login");
+            setStatus("E-posta doğrulandı. Şimdi giriş yapabilirsin.");
+        } catch (error) {
+            setStatus(error.message);
+        } finally { setBusy(form, false); }
+    });
+
+    document.getElementById("account-forgot-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+        const email = document.getElementById("account-forgot-email").value.trim();
+        try {
+            await apiRequest("/api/account/forgot-password", { email });
+            pendingEmail = email;
+            document.getElementById("account-reset-email").value = email;
+            showView("reset");
+            setStatus("Adres kayıtlıysa sıfırlama kodu gönderildi.");
+        } catch (error) {
+            setStatus(error.message);
+        } finally { setBusy(form, false); }
+    });
+
+    document.getElementById("account-reset-form").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        setBusy(form, true);
+        try {
+            await apiRequest("/api/account/reset-password", {
+                email: document.getElementById("account-reset-email").value.trim(),
+                code: document.getElementById("account-reset-code").value.trim(),
+                password: document.getElementById("account-reset-password").value
+            });
+            document.getElementById("account-login-identity").value =
+                document.getElementById("account-reset-email").value.trim();
+            showView("login");
+            setStatus("Şifren güncellendi. Yeni şifrenle giriş yapabilirsin.");
+        } catch (error) {
+            setStatus(error.message);
+        } finally { setBusy(form, false); }
+    });
+
+    accountLogout.addEventListener("click", async () => {
+        accountLogout.disabled = true;
+        try {
+            await apiRequest("/api/account/logout", {});
+            accountButton.textContent = "👤 Hesabım";
+            showView("login");
+            setStatus("Oturum kapatıldı.");
+        } catch (error) {
+            setStatus(error.message);
+        } finally { accountLogout.disabled = false; }
+    });
+
+    loadSiteAccount();
+});
     
 </script>
 
   <!-- SoraNetwork Hesap Penceresi -->
 <div id="site-account-modal" class="site-account-modal">
     <div class="site-account-content">
-        <button type="button" id="site-account-close" class="site-account-close">×</button>
-
+        <button type="button" id="site-account-close" class="site-account-close" aria-label="Kapat">×</button>
         <h2>SoraNetwork Hesabı</h2>
 
-        <p id="site-account-description">
-            Minecraft oyununda <strong>/site</strong> komutunu kullan.
-            Aldığın 8 haneli kodu buraya gir.
-        </p>
+        <section id="account-view-login" class="account-view">
+            <p>Hesabına giriş yap veya yeni bir SoraNetwork hesabı oluştur.</p>
+            <form id="account-login-form">
+                <label for="account-login-identity">Kullanıcı adı veya e-posta</label>
+                <input id="account-login-identity" type="text" autocomplete="username" required>
+                <label for="account-login-password">Şifre</label>
+                <input id="account-login-password" type="password" autocomplete="current-password" required>
+                <button type="submit">Giriş Yap</button>
+            </form>
+            <div class="account-switches">
+                <button type="button" data-account-view="register">Hesap oluştur</button>
+                <button type="button" data-account-view="forgot">Şifremi unuttum</button>
+            </div>
+        </section>
 
-        <form id="site-account-form">
-            <label for="site-account-code">Giriş Kodu</label>
+        <section id="account-view-register" class="account-view" hidden>
+            <p class="account-help">Önce Minecraft sunucusunda <strong>/sora link</strong> komutunu kullan. Aldığın bağlantı kodu 5 dakika geçerlidir.</p>
+            <form id="account-register-form">
+                <label for="account-register-email">E-posta</label>
+                <input id="account-register-email" type="email" autocomplete="email" required>
+                <label for="account-register-username">Minecraft kullanıcı adı</label>
+                <input id="account-register-username" type="text" autocomplete="username" maxlength="16" required>
+                <label for="account-register-password">Şifre (10-128 karakter)</label>
+                <input id="account-register-password" type="password" minlength="10" maxlength="128" autocomplete="new-password" required>
+                <label for="account-register-ticket">Minecraft bağlantı kodu</label>
+                <input id="account-register-ticket" type="text" autocomplete="off" required>
+                <button type="submit">Kayıt Ol</button>
+            </form>
+            <div class="account-switches"><button type="button" data-account-view="login">Giriş ekranına dön</button></div>
+        </section>
 
-            <input
-                id="site-account-code"
-                type="text"
-                inputmode="numeric"
-                autocomplete="one-time-code"
-                maxlength="8"
-                pattern="[0-9]{8}"
-                placeholder="00000000"
-                required
-            >
+        <section id="account-view-verify" class="account-view" hidden>
+            <p>E-posta adresine gönderilen 6 haneli doğrulama kodunu gir.</p>
+            <form id="account-verify-form">
+                <label for="account-verify-email">E-posta</label>
+                <input id="account-verify-email" type="email" autocomplete="email" required>
+                <label for="account-verify-code">Doğrulama kodu</label>
+                <input id="account-verify-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+                <button type="submit">E-postayı Doğrula</button>
+            </form>
+        </section>
 
-            <button type="submit" id="site-account-submit">
-                Hesabı Doğrula
-            </button>
-        </form>
+        <section id="account-view-forgot" class="account-view" hidden>
+            <p>Hesabına bağlı e-posta adresini gir. Adres kayıtlıysa sıfırlama kodu gönderilir.</p>
+            <form id="account-forgot-form">
+                <label for="account-forgot-email">E-posta</label>
+                <input id="account-forgot-email" type="email" autocomplete="email" required>
+                <button type="submit">Sıfırlama Kodu Gönder</button>
+            </form>
+            <div class="account-switches"><button type="button" data-account-view="login">Giriş ekranına dön</button></div>
+        </section>
 
-        <div id="site-account-status" role="status"></div>
+        <section id="account-view-reset" class="account-view" hidden>
+            <p>E-postana gelen 6 haneli kodu ve yeni şifreni gir.</p>
+            <form id="account-reset-form">
+                <label for="account-reset-email">E-posta</label>
+                <input id="account-reset-email" type="email" autocomplete="email" required>
+                <label for="account-reset-code">Sıfırlama kodu</label>
+                <input id="account-reset-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+                <label for="account-reset-password">Yeni şifre (10-128 karakter)</label>
+                <input id="account-reset-password" type="password" minlength="10" maxlength="128" autocomplete="new-password" required>
+                <button type="submit">Şifreyi Güncelle</button>
+            </form>
+        </section>
+
+        <div id="site-account-status" role="status" aria-live="polite"></div>
 
         <div id="site-account-profile" hidden>
-
-        <div
-    id="site-account-player-head"
-    role="img"
-    aria-label="Minecraft oyuncu kafası"
-    style="
-        width:72px;
-        height:72px;
-        border-radius:12px;
-        image-rendering:pixelated;
-        background-repeat:no-repeat;
-        background-color:#333;
-    "
-></div>
-          
-    <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
-
-    <p>
-        Minecraft UUID:
-        <strong id="site-account-player-uuid"></strong>
-    </p>
-
-    <p>Hesap durumu: <strong>Bağlı</strong></p>
-
-    <button type="button" id="site-account-logout">
-        Oturumu Kapat
-    </button>
-</div>
-      
+            <div id="site-account-player-head" role="img" aria-label="Minecraft oyuncu kafası" style="width:72px;height:72px;border-radius:12px;image-rendering:pixelated;background-repeat:no-repeat;background-color:#333;"></div>
+            <p>Hoş geldin, <strong id="site-account-player-name"></strong>!</p>
+            <p>E-posta: <strong id="site-account-email"></strong></p>
+            <p>Minecraft UUID: <strong id="site-account-player-uuid"></strong></p>
+            <p>Hesap durumu: <strong>Doğrulanmış</strong></p>
+            <button type="button" id="site-account-logout">Oturumu Kapat</button>
+        </div>
     </div>
 </div>
   <script>
