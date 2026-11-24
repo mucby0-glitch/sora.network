@@ -238,16 +238,19 @@
               const profileData = await statsResponse.json();
               const s = profileData.stats || {};
               const number = value => (Number(value) || 0).toLocaleString("tr-TR");
-              const progress = profileData.levelProgress || {};
-              const level = Number(profileData.level) || 1;
-              const totalXp = Number(profileData.xp) || 0;
-              const currentXp = Number(progress.current) || 0;
-              const requiredXp = Number(progress.required) || 100;
-              const percentage = Math.max(0, Math.min(100, Number(progress.percentage) || 0));
-              put("player-level", level);
-              put("player-total-xp", number(totalXp) + " XP");
-              put("level-current-xp", number(currentXp) + " / " + number(requiredXp) + " XP");
-              put("level-remaining", number(Math.max(0, requiredXp - currentXp)) + " XP sonraki seviyeye");
+              const minecraftLevelValue = profileData.minecraftLevel;
+              const level = minecraftLevelValue === null || minecraftLevelValue === undefined
+                ? null
+                : Number(minecraftLevelValue);
+              const totalXp = Number(profileData.minecraftXpTotal) || 0;
+              const xpProgress = Number(profileData.minecraftXpProgress);
+              const percentage = Number.isFinite(xpProgress)
+                ? Math.max(0, Math.min(100, xpProgress * 100))
+                : 0;
+              put("player-level", Number.isFinite(level) ? level : "--");
+              put("player-total-xp", number(totalXp) + " Minecraft XP");
+              put("level-current-xp", "Seviye ilerlemesi: %" + percentage.toLocaleString("tr-TR", {maximumFractionDigits:1}));
+              put("level-remaining", Number.isFinite(level) ? (level + 1) + ". seviyeye" : "Seviye verisi yok");
               document.getElementById("level-fill").style.width = percentage + "%";
               put("stat-mined", number(s.mined));
               put("stat-killed", number(s.killed));
