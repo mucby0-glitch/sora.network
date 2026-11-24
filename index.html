@@ -1891,13 +1891,7 @@ if (player.skin) {
       item.style.cursor = "pointer";
 
 item.addEventListener("click", () => {
-    document.getElementById("profile-head").src = head.src;
-    document.getElementById("profile-name").textContent = player.name;
-    document.getElementById("profile-uuid").textContent = player.uuid || "Bilinmiyor";
-
-    document.getElementById("player-modal").style.display = "flex";
-
-    loadPlayerProfile(player.name, player.uuid);
+    window.location.href = "/oyuncu/?isim=" + encodeURIComponent(player.name);
 });
 
         playerList.appendChild(item);
