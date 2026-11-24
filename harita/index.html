@@ -2034,7 +2034,20 @@ setInterval(checkServer, 60000);
     }
     function closeAccountModal() { accountModal.classList.remove("active"); }
 
-    accountButton.addEventListener("click", openAccountModal);
+    accountButton.addEventListener("click", async () => {
+        accountButton.disabled = true;
+        try {
+            const account = await apiRequest("/api/account/me");
+            if (account.authenticated) {
+                window.location.href = "/profil/";
+                return;
+            }
+        } catch (error) {
+            // Oturum bulunamazsa mevcut giriş penceresi açılır.
+        }
+        accountButton.disabled = false;
+        openAccountModal();
+    });
     accountClose.addEventListener("click", closeAccountModal);
     accountModal.addEventListener("click", event => {
         if (event.target === accountModal) closeAccountModal();
