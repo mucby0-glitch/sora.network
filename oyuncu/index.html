@@ -26,12 +26,17 @@
     h1{text-align:center;font-size:clamp(28px,5vw,42px);letter-spacing:-1.5px;margin:8px 0 28px}
     .panel{position:relative;overflow:hidden;border:1px solid rgba(255,116,23,.32);border-radius:20px;background:linear-gradient(145deg,#1b1b1b,#101010);box-shadow:0 20px 70px rgba(0,0,0,.35)}
     .panel:before{content:"";position:absolute;width:320px;height:320px;right:-100px;top:-190px;border-radius:50%;background:rgba(255,116,23,.14);filter:blur(65px);pointer-events:none}
-    .hero{position:relative;z-index:1;text-align:center;padding:38px 25px 28px}
-    #head{width:112px;height:112px;object-fit:contain;image-rendering:pixelated;border-radius:16px;border:2px solid rgba(255,116,23,.55);background:#222;box-shadow:0 0 35px rgba(255,116,23,.16)}
-    #name{font-size:clamp(25px,5vw,34px);font-weight:900;margin-top:13px;overflow-wrap:anywhere}
+    .profile-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr);align-items:stretch;gap:24px;padding:24px}
+    .skin-stage{position:relative;min-height:470px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(255,116,23,.2);border-radius:16px;background:radial-gradient(ellipse at 50% 45%,rgba(255,116,23,.13),transparent 68%),rgba(0,0,0,.22)}
+    #skin-canvas{display:block;width:100%;height:470px;touch-action:pan-y}
+    #skin-fallback{display:none;width:112px;height:112px;image-rendering:pixelated;border-radius:16px;border:2px solid rgba(255,116,23,.55)}
+    .skin-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#888;font-size:11px;pointer-events:none}
+    .profile-info{min-width:0;display:flex;flex-direction:column;justify-content:center}
+    .profile-heading{padding:8px 4px 20px}
+    #name{font-size:clamp(25px,5vw,34px);font-weight:900;overflow-wrap:anywhere}
     #status{display:inline-block;margin-top:7px;padding:5px 11px;border-radius:30px;background:rgba(255,116,23,.12);color:var(--light);font-size:11px;font-weight:800}
     .uuid{color:#777;font-size:11px;overflow-wrap:anywhere;margin-top:13px}
-    .stats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:0 24px 24px}
+    .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
     .stat{min-height:112px;padding:18px 12px;text-align:center;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
     .ico{font-size:23px}.label{font-size:12px;color:var(--muted)}.value{font-size:18px;font-weight:900;color:var(--light);overflow-wrap:anywhere}
     .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 20px 25px;position:relative;z-index:1}
@@ -39,7 +44,8 @@
     button:hover,.button:hover{background:var(--orange);color:#111}
     #message{text-align:center;color:var(--muted);font-size:13px;margin:18px 0;min-height:22px}
     .foot{text-align:center;color:#777;font-size:11px;margin-top:22px}
-    @media(max-width:560px){main{margin:35px auto 55px}.hero{padding:30px 15px 24px}.stats{padding:0 14px 18px;gap:9px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
+    @media(max-width:700px){.profile-layout{grid-template-columns:1fr;gap:15px;padding:15px}.skin-stage{min-height:360px}#skin-canvas{height:360px}.profile-heading{text-align:center;padding:10px 4px 17px}.stats{gap:9px}}
+    @media(max-width:560px){main{margin:35px auto 55px}.skin-stage{min-height:330px}#skin-canvas{height:330px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
   </style>
 </head>
 <body>
@@ -53,18 +59,26 @@
     <div class="eyebrow">SORANETWORK • OYUNCU KARTI</div>
     <h1>Oyuncu Profili</h1>
     <div class="panel">
-      <section class="hero">
-        <img id="head" src="https://mc-heads.net/avatar/Steve/112" alt="Minecraft oyuncu kafası">
-        <div id="name">Oyuncu yükleniyor...</div>
-        <span id="status">Profil bilgileri alınıyor</span>
-        <div class="uuid" id="uuid">UUID: --</div>
-      </section>
-      <section class="stats">
-        <div class="stat"><span class="ico">⏱️</span><span class="label">Toplam oyun süresi</span><strong class="value" id="playtime">--</strong></div>
-        <div class="stat"><span class="ico">🏆</span><span class="label">Oyun süresi sırası</span><strong class="value" id="playrank">--</strong></div>
-        <div class="stat"><span class="ico">💰</span><span class="label">Towny bakiyesi</span><strong class="value" id="balance">--</strong></div>
-        <div class="stat"><span class="ico">🛡️</span><span class="label">Sunucu rütbesi</span><strong class="value" id="rank">--</strong></div>
-      </section>
+      <div class="profile-layout">
+        <section class="skin-stage" aria-label="3 boyutlu Minecraft karakteri">
+          <canvas id="skin-canvas" width="360" height="470"></canvas>
+          <img id="skin-fallback" src="https://mc-heads.net/avatar/Steve/112" alt="Minecraft oyuncu kafası">
+          <div class="skin-hint">Karakteri fareyle sürükleyerek döndürebilirsin</div>
+        </section>
+        <section class="profile-info">
+          <div class="profile-heading">
+            <div id="name">Oyuncu yükleniyor...</div>
+            <span id="status">Profil bilgileri alınıyor</span>
+            <div class="uuid" id="uuid">UUID: --</div>
+          </div>
+          <section class="stats">
+            <div class="stat"><span class="ico">⏱️</span><span class="label">Toplam oyun süresi</span><strong class="value" id="playtime">--</strong></div>
+            <div class="stat"><span class="ico">🏆</span><span class="label">Oyun süresi sırası</span><strong class="value" id="playrank">--</strong></div>
+            <div class="stat"><span class="ico">💰</span><span class="label">Towny bakiyesi</span><strong class="value" id="balance">--</strong></div>
+            <div class="stat"><span class="ico">🛡️</span><span class="label">Sunucu rütbesi</span><strong class="value" id="rank">--</strong></div>
+          </section>
+        </section>
+      </div>
       <div class="actions">
         <button type="button" id="copy">🔗 Profil bağlantısını kopyala</button>
         <a class="button" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord</a>
@@ -126,23 +140,34 @@
         put("uuid", "UUID: " + (uuid || "Bilinmiyor"));
         put("status", online ? "🟢 Şu anda çevrimiçi" : "SoraNetwork oyuncusu");
 
-        const head = document.getElementById("head");
-        head.src = "https://mc-heads.net/avatar/" + encodeURIComponent(requestedName) + "/112";
-        if (skin && skin.skin) {
-          const texture = new Image();
-          texture.crossOrigin = "anonymous";
-          texture.onload = () => {
-            try {
-              const canvas = document.createElement("canvas");
-              canvas.width = canvas.height = 32;
-              const ctx = canvas.getContext("2d");
-              ctx.imageSmoothingEnabled = false;
-              ctx.drawImage(texture, 8, 8, 8, 8, 0, 0, 32, 32);
-              ctx.drawImage(texture, 40, 8, 8, 8, 0, 0, 32, 32);
-              head.src = canvas.toDataURL("image/png");
-            } catch (_) {}
-          };
-          texture.src = skin.skin.replace(/^http:/, "https:");
+        const skinUrl = skin && skin.skin ? skin.skin.replace(/^http:/, "https:") : "";
+        if (skinUrl) {
+          try {
+            const skinview3d = await import("https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/+esm");
+            const viewer = new skinview3d.SkinViewer({
+              canvas: document.getElementById("skin-canvas"),
+              width: 360,
+              height: 470,
+              skin: skinUrl
+            });
+            viewer.autoRotate = true;
+            viewer.controls.enableRotate = true;
+            viewer.zoom = 0.82;
+            viewer.fov = 48;
+            window.soraSkinViewer = viewer;
+          } catch (viewerError) {
+            console.error("3D skin görüntülenemedi:", viewerError);
+            document.getElementById("skin-canvas").style.display = "none";
+            const fallback = document.getElementById("skin-fallback");
+            fallback.src = "https://mc-heads.net/avatar/" + encodeURIComponent(requestedName) + "/112";
+            fallback.style.display = "block";
+            put("message", "3D karakter yüklenemedi; profil bilgileri görüntüleniyor.");
+          }
+        } else {
+          document.getElementById("skin-canvas").style.display = "none";
+          const fallback = document.getElementById("skin-fallback");
+          fallback.src = "https://mc-heads.net/avatar/" + encodeURIComponent(requestedName) + "/112";
+          fallback.style.display = "block";
         }
 
         const sorted = [...(playData.players || [])].sort((a,b) => (Number(b.playTimeSeconds)||0) - (Number(a.playTimeSeconds)||0));
