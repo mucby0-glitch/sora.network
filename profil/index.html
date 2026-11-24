@@ -23,8 +23,10 @@ h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
 .layout{display:grid;grid-template-columns: minmax(240px,.78fr) minmax(0,1.5fr);gap:18px}
 .card{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);border-radius:17px;padding:23px;box-shadow:0 18px 50px rgba(0,0,0,.18)}
 .identity{text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(255,116,23,.13),transparent 58%),#141414;border-color:rgba(255,116,23,.3)}
-.avatar{width:104px;height:104px;margin:3px auto 17px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,116,23,.2),rgba(255,255,255,.025));border:1px solid rgba(255,116,23,.3);font-size:48px}
-.avatar-face{width:72px;height:72px;image-rendering:pixelated;background-repeat:no-repeat;background-size:576px 576px;background-position:-360px -72px,-72px -72px;border-radius:8px}
+.skin-stage{position:relative;width:100%;height:390px;margin:0 auto 17px;overflow:hidden;border:1px solid rgba(255,116,23,.25);border-radius:15px;background:radial-gradient(ellipse at 50% 45%,rgba(255,116,23,.14),transparent 68%),rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center}
+#account-skin{display:block;width:100%;height:100%;touch-action:pan-y}
+#skin-fallback{display:none;width:76px;height:76px;image-rendering:pixelated;border-radius:12px}
+.skin-hint{position:absolute;bottom:10px;left:0;right:0;color:#888;font-size:10px;pointer-events:none}
 .username{font-size:23px;font-weight:900;margin:0 0 8px}
 .status{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(62,205,126,.22);background:rgba(62,205,126,.09);color:#8de0ad;border-radius:99px;padding:6px 11px;font-size:11px;font-weight:800}
 .status:before{content:"";width:6px;height:6px;border-radius:50%;background:#58d68d}
@@ -44,7 +46,7 @@ h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
 .logout:disabled{opacity:.55;cursor:wait}
 .message{min-height:20px;margin-top:12px;color:var(--light);font-size:12px;text-align:center}
 footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
-@media(max-width:700px){main{margin-top:30px}.layout{grid-template-columns:1fr}.identity{padding:25px}.actions{grid-template-columns:1fr}.card{padding:19px}}
+@media(max-width:700px){main{margin-top:30px}.layout{grid-template-columns:1fr}.identity{padding:20px}.skin-stage{height:350px}.actions{grid-template-columns:1fr}.card{padding:19px}}
 </style>
 </head>
 <body>
@@ -58,7 +60,7 @@ footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
 <p class="intro">Hesap bilgilerini görüntüle ve SoraNetwork hesabını yönet.</p>
 <div class="layout">
 <section class="card identity">
-<div class="avatar"><div id="player-head" class="avatar-face" role="img" aria-label="Minecraft oyuncu kafası"></div></div>
+<div class="skin-stage"><canvas id="account-skin" aria-label="Döndürülebilir 3D Minecraft karakteri"></canvas><img id="skin-fallback" alt="Minecraft oyuncu kafası"><span class="skin-hint">Karakteri fareyle veya dokunarak döndürebilirsin</span></div>
 <h2 class="username" id="username">Hesap yükleniyor...</h2>
 <span class="status">Hesap doğrulanmış</span>
 <p class="identity-note">Minecraft hesabın SoraNetwork hesabına bağlı.</p>
@@ -98,12 +100,48 @@ async function init(){
   document.getElementById("minecraft-name").textContent=name;
   document.getElementById("email").textContent=me.email||"Belirtilmemiş";
   document.getElementById("player-profile").href="/oyuncu/?isim="+encodeURIComponent(name);
+  let skinUrl="";
   try{
-   const r=await fetch(API+"/api/players",{cache:"no-store"});
-   if(r.ok){const raw=await r.json();const list=Array.isArray(raw)?raw:(raw.players||[]);const p=list.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
-    if(p){if(p.uuid)document.getElementById("uuid").textContent=p.uuid;const skin=p.skin||p.textureUrl;if(skin){const skinUrl=skin.replace(/^http:/,"https:");const head=document.getElementById("player-head");head.style.backgroundImage='url("'+skinUrl+'"), url("'+skinUrl+'")';}}
+   const [playersResponse,skinsResponse]=await Promise.all([
+    fetch(API+"/api/players",{cache:"no-store"}),
+    fetch(API+"/api/skins",{cache:"no-store"})
+   ]);
+   if(playersResponse.ok){
+    const raw=await playersResponse.json();
+    const list=Array.isArray(raw)?raw:(raw.players||[]);
+    const player=list.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
+    if(player&&player.uuid)document.getElementById("uuid").textContent=player.uuid;
    }
-  }catch(e){}
+   if(skinsResponse.ok){
+    const rawSkins=await skinsResponse.json();
+    const skins=Array.isArray(rawSkins)?rawSkins:(rawSkins.players||[]);
+    const skin=skins.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
+    if(skin&&skin.skin)skinUrl=skin.skin.replace(/^http:/,"https:");
+   }
+  }catch(e){console.warn("Oyuncu skin bilgisi alınamadı:",e)}
+  if(skinUrl){
+   try{
+    const skinview3d=await import("https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/+esm");
+    const canvas=document.getElementById("account-skin");
+    const viewer=new skinview3d.SkinViewer({canvas,width:340,height:390,skin:skinUrl});
+    viewer.autoRotate=true;
+    viewer.autoRotateSpeed=0.6;
+    viewer.controls.enableRotate=true;
+    viewer.zoom=1.04;
+    viewer.fov=48;
+    window.soraAccountSkinViewer=viewer;
+   }catch(error){
+    console.error("3D skin yüklenemedi:",error);
+    document.getElementById("account-skin").style.display="none";
+    const fallback=document.getElementById("skin-fallback");
+    fallback.src="https://mc-heads.net/avatar/"+encodeURIComponent(name)+"/112";
+    fallback.style.display="block";
+   }
+  }else{
+   document.getElementById("account-skin").style.display="none";
+   document.getElementById("skin-fallback").style.display="block";
+   document.getElementById("skin-fallback").src="https://mc-heads.net/avatar/"+encodeURIComponent(name)+"/112";
+  }
  }catch(e){document.getElementById("message").textContent=e.message;location.replace("/?account=login")}
 }
 document.getElementById("logout").addEventListener("click",async function(){const b=this;b.disabled=true;document.getElementById("message").textContent="Oturum kapatılıyor...";try{await api("/api/account/logout",{});location.replace("/")}catch(e){document.getElementById("message").textContent=e.message;b.disabled=false}});
