@@ -184,7 +184,7 @@
         if (uuid) {
           try {
             const visibilityResponse = await fetch(
-              API + "/api/profile-visibility?uuid=" + encodeURIComponent(uuid),
+              API + "/api/profile-visibility?username=" + encodeURIComponent(requestedName),
               {cache:"no-store"}
             );
             if (visibilityResponse.ok) {
