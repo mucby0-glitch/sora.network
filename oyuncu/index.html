@@ -44,6 +44,17 @@
     button:hover,.button:hover{background:var(--orange);color:#111}
     #message{text-align:center;color:var(--muted);font-size:13px;margin:18px 0;min-height:22px}
     .foot{text-align:center;color:#777;font-size:11px;margin-top:22px}
+    .extra-section{position:relative;z-index:1;margin:0 24px 24px;padding:22px;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.2)}
+    .extra-title{font-size:17px;font-weight:900;margin-bottom:14px}
+    .extra-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .extra-stat{padding:13px 8px;text-align:center;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.035)}
+    .extra-stat strong{display:block;color:var(--light);font-size:17px;font-weight:900;overflow-wrap:anywhere}
+    .extra-stat span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+    .achievement-list{display:flex;flex-wrap:wrap;gap:9px}
+    .achievement{padding:9px 12px;border:1px solid rgba(255,116,23,.25);border-radius:10px;background:rgba(255,116,23,.08);font-size:12px;font-weight:700;color:#ffd0ad}
+    .empty-achievements{color:var(--muted);font-size:12px}
+    @media(max-width:700px){.extra-section{margin:0 15px 15px;padding:16px}.extra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
     @media(max-width:700px){.profile-layout{grid-template-columns:1fr;gap:15px;padding:15px}.skin-stage{min-height:360px}#skin-canvas{height:360px}.profile-heading{text-align:center;padding:10px 4px 17px}.stats{gap:9px}}
     @media(max-width:560px){main{margin:35px auto 55px}.skin-stage{min-height:330px}#skin-canvas{height:330px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
   </style>
@@ -84,6 +95,23 @@
         <a class="button" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord</a>
       </div>
     </div>
+    <section class="extra-section" aria-label="Oyun istatistikleri">
+      <h2 class="extra-title">📊 Oyun İstatistikleri</h2>
+      <div class="extra-grid">
+        <div class="extra-stat"><strong id="stat-mined">--</strong><span>Maden / blok</span></div>
+        <div class="extra-stat"><strong id="stat-killed">--</strong><span>Canavar öldürme</span></div>
+        <div class="extra-stat"><strong id="stat-deaths">--</strong><span>Ölüm</span></div>
+        <div class="extra-stat"><strong id="stat-crafted">--</strong><span>Üretilen eşya</span></div>
+        <div class="extra-stat"><strong id="stat-used">--</strong><span>Kullanılan eşya</span></div>
+        <div class="extra-stat"><strong id="stat-picked">--</strong><span>Toplanan eşya</span></div>
+        <div class="extra-stat"><strong id="stat-dropped">--</strong><span>Atılan eşya</span></div>
+        <div class="extra-stat"><strong id="stat-walk">--</strong><span>Yürüme mesafesi</span></div>
+        <div class="extra-stat"><strong id="stat-sprint">--</strong><span>Koşma mesafesi</span></div>
+        <div class="extra-stat"><strong id="stat-fly">--</strong><span>Uçma mesafesi</span></div>
+      </div>
+      <h2 class="extra-title" style="margin-top:24px">🏆 Kazanılan Başarımlar</h2>
+      <div class="achievement-list" id="achievement-list"><span class="empty-achievements">Başarımlar yükleniyor...</span></div>
+    </section>
     <div id="message" role="status" aria-live="polite"></div>
     <div class="foot">SoraNetwork oyuncu istatistikleri • Veriler sunucu API'sinden alınır.</div>
   </main>
@@ -184,6 +212,58 @@
           put("balance", "Sıralamada yok");
         }
         put("rank", rankEntry ? (rankEntry.displayName || rankEntry.name || "Tanımlı") : "Veri yok");
+
+        if (uuid) {
+          try {
+            const statsResponse = await fetch(API + "/api/profile-stats?uuid=" + encodeURIComponent(uuid), {cache:"no-store"});
+            if (statsResponse.ok) {
+              const profileData = await statsResponse.json();
+              const s = profileData.stats || {};
+              const number = value => (Number(value) || 0).toLocaleString("tr-TR");
+              put("stat-mined", number(s.mined));
+              put("stat-killed", number(s.killed));
+              put("stat-deaths", number(s.deaths));
+              put("stat-crafted", number(s.crafted));
+              put("stat-used", number(s.used));
+              put("stat-picked", number(s.pickedUp));
+              put("stat-dropped", number(s.dropped));
+              put("stat-walk", (Number(s.walkDistanceKm) || 0).toFixed(2).replace(".", ",") + " km");
+              put("stat-sprint", (Number(s.sprintDistanceKm) || 0).toFixed(2).replace(".", ",") + " km");
+              put("stat-fly", (Number(s.flyDistanceKm) || 0).toFixed(2).replace(".", ",") + " km");
+
+              const titles = {
+                "minecraft:adventure/kill_a_mob":"Canavar Avcısı",
+                "minecraft:end/elytra":"Gökyüzünün Sınırı",
+                "minecraft:nether/netherite_armor":"Zırhımı Koru",
+                "minecraft:nether/obtain_blaze_rod":"Alevlerin İçinde",
+                "minecraft:story/enter_the_nether":"Nether'e Gir",
+                "minecraft:story/shiny_gear":"Elmas!",
+                "minecraft:story/smelt_iron":"Demir Çağı"
+              };
+              const list = document.getElementById("achievement-list");
+              list.replaceChildren();
+              const achievements = profileData.advancements || [];
+              if (!achievements.length) {
+                const empty = document.createElement("span");
+                empty.className = "empty-achievements";
+                empty.textContent = "Henüz kazanılmış başarım yok.";
+                list.appendChild(empty);
+              } else {
+                achievements.forEach(id => {
+                  const item = document.createElement("span");
+                  item.className = "achievement";
+                  item.textContent = titles[id] || id.split("/").pop().replaceAll("_", " ");
+                  list.appendChild(item);
+                });
+              }
+            } else {
+              document.getElementById("achievement-list").textContent = "İstatistikler şu anda yüklenemedi.";
+            }
+          } catch (statsError) {
+            console.warn("Profil istatistikleri yüklenemedi:", statsError);
+            document.getElementById("achievement-list").textContent = "İstatistikler şu anda yüklenemedi.";
+          }
+        }
         put("message", "");
         document.title = (online || skin || played || rich).name + " | SoraNetwork";
       } catch (error) {
