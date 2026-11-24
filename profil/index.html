@@ -41,6 +41,16 @@ h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
 .action{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;border-radius:10px;border:1px solid rgba(255,116,23,.32);background:rgba(255,116,23,.07);color:var(--light);font-size:12px;font-weight:800;transition:.2s}
 .action:hover{background:rgba(255,116,23,.15);transform:translateY(-1px)}
 .security{margin-top:18px}
+.dashboard{margin-top:18px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dashboard-stat{padding:15px;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:rgba(255,255,255,.025);min-width:0}
+.dashboard-stat span{display:block;color:#888;font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;margin-bottom:7px}
+.dashboard-stat strong{display:block;color:var(--light);font-size:17px;font-weight:900;overflow-wrap:anywhere}
+.dashboard-level{margin-top:12px;padding:14px;border:1px solid rgba(255,116,23,.25);border-radius:11px;background:rgba(255,116,23,.06)}
+.dashboard-level-top{display:flex;justify-content:space-between;gap:10px;color:var(--light);font-size:12px;font-weight:850;margin-bottom:9px}
+.dashboard-track{height:8px;border-radius:20px;background:rgba(255,255,255,.1);overflow:hidden}
+.dashboard-fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--light));border-radius:20px;transition:width .4s}
+.dashboard-level small{display:block;color:#999;font-size:10px;margin-top:7px}
 .security p{color:#999;font-size:13px;line-height:1.65;margin:0}
 .logout{width:100%;margin-top:18px;padding:13px;border:1px solid rgba(255,116,23,.35);border-radius:10px;background:linear-gradient(100deg,#ff7417,#ff923d);color:#17100b;font-weight:900;font-size:13px;cursor:pointer}
 .logout:disabled{opacity:.55;cursor:wait}
@@ -78,6 +88,22 @@ footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
 <a class="action" href="/#home">Sunucuya dön ↗</a>
 </div>
 </section>
+<section class="card dashboard">
+<h2 class="section-title">Minecraft istatistiklerin</h2>
+<div class="dashboard-grid">
+<div class="dashboard-stat"><span>Seviye</span><strong id="dash-level">--</strong></div>
+<div class="dashboard-stat"><span>Toplam Minecraft XP</span><strong id="dash-xp">--</strong></div>
+<div class="dashboard-stat"><span>Oyun süresi</span><strong id="dash-playtime">--</strong></div>
+<div class="dashboard-stat"><span>Oyun süresi sırası</span><strong id="dash-playrank">--</strong></div>
+<div class="dashboard-stat"><span>Towny bakiyesi</span><strong id="dash-balance">--</strong></div>
+<div class="dashboard-stat"><span>Sunucu rütbesi</span><strong id="dash-rank">--</strong></div>
+</div>
+<div class="dashboard-level">
+<div class="dashboard-level-top"><span id="dash-level-label">Seviye ilerlemesi</span><span id="dash-level-percent">--%</span></div>
+<div class="dashboard-track"><div class="dashboard-fill" id="dash-level-fill"></div></div>
+<small id="dash-level-note">Minecraft seviye ilerlemesi</small>
+</div>
+</section>
 <section class="card security">
 <h2 class="section-title">Oturum ve güvenlik</h2>
 <p>Bu cihazdaki SoraNetwork oturumunu güvenli şekilde kapatabilirsin. Hesabın ve Minecraft bağlantın silinmez.</p>
@@ -99,24 +125,35 @@ async function init(){
   let displayName=name;
   document.getElementById("email").textContent=me.email||"Belirtilmemiş";
   let skinUrl="";
-  try{
-   const [playersResponse,skinsResponse]=await Promise.all([
-    fetch(API+"/api/players",{cache:"no-store"}),
-    fetch(API+"/api/skins",{cache:"no-store"})
-   ]);
-   if(playersResponse.ok){
-    const raw=await playersResponse.json();
-    const list=Array.isArray(raw)?raw:(raw.players||[]);
-    const player=list.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
-    if(player){displayName=player.name||name;if(player.uuid)document.getElementById("uuid").textContent=player.uuid;}
-   }
-   if(skinsResponse.ok){
-    const rawSkins=await skinsResponse.json();
-    const skins=Array.isArray(rawSkins)?rawSkins:(rawSkins.players||[]);
-    const skin=skins.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
-    if(skin&&skin.skin)skinUrl=skin.skin.replace(/^http:/,"https:");
-   }
-  }catch(e){console.warn("Oyuncu skin bilgisi alınamadı:",e)}
+  const same=value=>String(value||"").toLowerCase()===name.toLowerCase();
+  const getList=data=>Array.isArray(data)?data:(data&&Array.isArray(data.players)?data.players:[]);
+  const requests=await Promise.allSettled([
+   fetch(API+"/api/players",{cache:"no-store"}).then(r=>r.ok?r.json():null),
+   fetch(API+"/api/skins",{cache:"no-store"}).then(r=>r.ok?r.json():null),
+   fetch(API+"/api/playtime",{cache:"no-store"}).then(r=>r.ok?r.json():null),
+   fetch(API+"/api/baltop",{cache:"no-store"}).then(r=>r.ok?r.json():null),
+   fetch(API+"/api/ranks",{cache:"no-store"}).then(r=>r.ok?r.json():null)
+  ]);
+  const data=requests.map(x=>x.status==="fulfilled"?x.value:null);
+  const [onlineData,skinData,playData,baltopData,rankData]=data;
+  const online=getList(onlineData).find(x=>same(x.name));
+  const skin=getList(skinData).find(x=>same(x.name));
+  const played=getList(playData).find(x=>same(x.name));
+  const rich=getList(baltopData).find(x=>same(x.name));
+  const uuid=(online&&online.uuid)||(skin&&skin.uuid)||(played&&played.uuid)||(rich&&rich.uuid)||me.minecraft_uuid||"";
+  if(online)displayName=online.name||name;else if(skin)displayName=skin.name||name;
+  if(uuid)document.getElementById("uuid").textContent=uuid;
+  if(skin&&skin.skin)skinUrl=skin.skin.replace(/^http:/,"https:");
+  const fmt=value=>(Number(value)||0).toLocaleString("tr-TR");
+  const fmtTime=seconds=>{const total=Math.max(0,Number(seconds)||0),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60);return days>0?days+" gün "+hours+" saat":hours>0?hours+" saat "+minutes+" dk":minutes+" dakika};
+  document.getElementById("dash-playtime").textContent=played?fmtTime(played.playTimeSeconds):"Veri yok";
+  const sorted=[...getList(playData)].sort((a,b)=>(Number(b.playTimeSeconds)||0)-(Number(a.playTimeSeconds)||0));
+  const place=sorted.findIndex(x=>same(x.name));
+  document.getElementById("dash-playrank").textContent=place>=0?"#"+(place+1):"—";
+  if(rich){const amount=Number(rich.balance),currency=baltopData&&baltopData.currency==="dollar"?"$":(baltopData&&baltopData.currency||"");document.getElementById("dash-balance").textContent=Number.isFinite(amount)?fmt(amount)+(currency?" "+currency:""):"Veri yok"}else document.getElementById("dash-balance").textContent="Sıralamada yok";
+  const rankEntry=getList(rankData).find(x=>x.uuid===uuid);
+  document.getElementById("dash-rank").textContent=rankEntry?(rankEntry.displayName||rankEntry.name||"Tanımlı"):"Veri yok";
+  if(uuid){try{const response=await fetch(API+"/api/profile-stats?uuid="+encodeURIComponent(uuid),{cache:"no-store"});if(response.ok){const stats=await response.json(),level=stats.minecraftLevel,totalXp=Number(stats.minecraftXpTotal),progress=Number(stats.minecraftXpProgress),percent=Number.isFinite(progress)?Math.max(0,Math.min(100,progress*100)):0;document.getElementById("dash-level").textContent=level===null||level===undefined?"Veri yok":fmt(level);document.getElementById("dash-xp").textContent=Number.isFinite(totalXp)?fmt(totalXp):"Veri yok";document.getElementById("dash-level-label").textContent=level===null||level===undefined?"Seviye ilerlemesi":"Seviye "+fmt(level)+" ilerlemesi";document.getElementById("dash-level-percent").textContent=percent.toLocaleString("tr-TR",{maximumFractionDigits:1})+"%";document.getElementById("dash-level-fill").style.width=percent+"%";document.getElementById("dash-level-note").textContent="Minecraft oyuncu verilerinden alınır."}}catch(error){console.warn("Minecraft seviye bilgisi alınamadı:",error)}}
   document.getElementById("username").textContent=displayName;
   document.getElementById("minecraft-name").textContent=displayName;
   document.getElementById("player-profile").href="/oyuncu/?isim="+encodeURIComponent(displayName);
@@ -141,7 +178,7 @@ async function init(){
   }else{
    document.getElementById("account-skin").style.display="none";
    document.getElementById("skin-fallback").style.display="block";
-   document.getElementById("skin-fallback").src="https://mc-heads.net/avatar/"+encodeURIComponent(name)+"/112";
+   document.getElementById("skin-fallback").src="https://mc-heads.net/avatar/"+encodeURIComponent(displayName)+"/112";
   }
  }catch(e){document.getElementById("message").textContent=e.message;location.replace("/?account=login")}
 }
