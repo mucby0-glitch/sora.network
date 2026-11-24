@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0b">
+<title>Hesabım | SoraNetwork</title>
+<meta name="description" content="SoraNetwork hesap profilini yönet.">
+<link rel="icon" href="/sora-logo.webp">
+<style>
+:root{--orange:#ff7417;--light:#ff9a45;--bg:#0b0b0b;--panel:#151515;--muted:#969696}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -12%,rgba(255,116,23,.15),transparent 42%),var(--bg);color:#f5f5f5;font-family:Inter,Arial,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.topbar{height:74px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(10,10,10,.88);backdrop-filter:blur(14px);display:flex;align-items:center}
+.topbar-inner{width:min(1120px,calc(100% - 36px));margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-weight:950;letter-spacing:1px}.brand img{width:39px;height:39px;object-fit:cover;border-radius:11px}.brand span{color:var(--orange)}
+.back{color:#bbb;font-size:13px;font-weight:700}.back:hover{color:var(--light)}
+main{width:min(1000px,calc(100% - 32px));margin:48px auto 70px}
+.eyebrow{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
+.intro{color:var(--muted);margin:0 0 28px;font-size:14px;line-height:1.6}
+.layout{display:grid;grid-template-columns: minmax(240px,.78fr) minmax(0,1.5fr);gap:18px}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);border-radius:17px;padding:23px;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+.identity{text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(255,116,23,.13),transparent 58%),#141414;border-color:rgba(255,116,23,.3)}
+.avatar{width:104px;height:104px;margin:3px auto 17px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,116,23,.2),rgba(255,255,255,.025));border:1px solid rgba(255,116,23,.3);font-size:48px}
+.avatar img{width:72px;height:72px;image-rendering:pixelated}
+.username{font-size:23px;font-weight:900;margin:0 0 8px}
+.status{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(62,205,126,.22);background:rgba(62,205,126,.09);color:#8de0ad;border-radius:99px;padding:6px 11px;font-size:11px;font-weight:800}
+.status:before{content:"";width:6px;height:6px;border-radius:50%;background:#58d68d}
+.identity-note{color:#888;font-size:12px;line-height:1.6;margin:17px 0 0}
+.section-title{font-size:16px;margin:0 0 17px;display:flex;align-items:center;gap:9px}
+.section-title:before{content:"";width:4px;height:17px;border-radius:4px;background:var(--orange)}
+.details{display:grid;gap:10px}
+.detail{padding:14px 15px;border:1px solid rgba(255,255,255,.075);background:rgba(255,255,255,.025);border-radius:11px;min-width:0}
+.detail-label{display:block;color:#858585;font-size:10px;font-weight:850;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.detail-value{font-size:14px;font-weight:750;overflow-wrap:anywhere}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.action{display:flex;align-items:center;justify-content:center;text-align:center;padding:12px;border-radius:10px;border:1px solid rgba(255,116,23,.32);background:rgba(255,116,23,.07);color:var(--light);font-size:12px;font-weight:800;transition:.2s}
+.action:hover{background:rgba(255,116,23,.15);transform:translateY(-1px)}
+.security{margin-top:18px}
+.security p{color:#999;font-size:13px;line-height:1.65;margin:0}
+.logout{width:100%;margin-top:18px;padding:13px;border:1px solid rgba(255,116,23,.35);border-radius:10px;background:linear-gradient(100deg,#ff7417,#ff923d);color:#17100b;font-weight:900;font-size:13px;cursor:pointer}
+.logout:disabled{opacity:.55;cursor:wait}
+.message{min-height:20px;margin-top:12px;color:var(--light);font-size:12px;text-align:center}
+footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
+@media(max-width:700px){main{margin-top:30px}.layout{grid-template-columns:1fr}.identity{padding:25px}.actions{grid-template-columns:1fr}.card{padding:19px}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+<a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a>
+<a class="back" href="/">← Ana sayfaya dön</a>
+</div></header>
+<main>
+<div class="eyebrow">SoraNetwork • Hesap merkezi</div>
+<h1>Hesabım</h1>
+<p class="intro">Hesap bilgilerini görüntüle ve SoraNetwork hesabını yönet.</p>
+<div class="layout">
+<section class="card identity">
+<div class="avatar"><img id="player-head" src="/sora-logo.webp" alt="Oyuncu kafası"></div>
+<h2 class="username" id="username">Hesap yükleniyor...</h2>
+<span class="status">Hesap doğrulanmış</span>
+<p class="identity-note">Minecraft hesabın SoraNetwork hesabına bağlı.</p>
+</section>
+<div>
+<section class="card">
+<h2 class="section-title">Hesap bilgileri</h2>
+<div class="details">
+<div class="detail"><span class="detail-label">Minecraft kullanıcı adı</span><strong class="detail-value" id="minecraft-name">Yükleniyor...</strong></div>
+<div class="detail"><span class="detail-label">E-posta adresi</span><strong class="detail-value" id="email">Yükleniyor...</strong></div>
+<div class="detail"><span class="detail-label">Minecraft UUID</span><strong class="detail-value" id="uuid">Oyuncu bilgisi bekleniyor</strong></div>
+</div>
+<div class="actions">
+<a class="action" id="player-profile" href="/">Minecraft profilim ↗</a>
+<a class="action" href="/#home">Sunucuya dön ↗</a>
+</div>
+</section>
+<section class="card security">
+<h2 class="section-title">Oturum ve güvenlik</h2>
+<p>Bu cihazdaki SoraNetwork oturumunu güvenli şekilde kapatabilirsin. Hesabın ve Minecraft bağlantın silinmez.</p>
+<button class="logout" id="logout" type="button">Oturumu Kapat</button>
+<div class="message" id="message" role="status" aria-live="polite"></div>
+</section>
+</div>
+</div>
+<footer>SoraNetwork hesap merkezi • Minecraft hesabınla bağlantılı bilgilerin.</footer>
+</main>
+<script>
+const API="https://api.soranetwork.com.tr";
+async function api(path,body){const options={method:body?"POST":"GET",credentials:"include"};if(body){options.headers={"Content-Type":"application/json"};options.body=JSON.stringify(body)}const r=await fetch(API+path,options);const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"İşlem gerçekleştirilemedi.");return d}
+async function init(){
+ try{
+  const me=await api("/api/account/me");
+  if(!me.authenticated){location.replace("/?account=login");return}
+  const name=me.username||"Oyuncu";
+  document.getElementById("username").textContent=name;
+  document.getElementById("minecraft-name").textContent=name;
+  document.getElementById("email").textContent=me.email||"Belirtilmemiş";
+  document.getElementById("player-profile").href="/oyuncu/?isim="+encodeURIComponent(name);
+  try{
+   const r=await fetch(API+"/api/players",{cache:"no-store"});
+   if(r.ok){const raw=await r.json();const list=Array.isArray(raw)?raw:(raw.players||[]);const p=list.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
+    if(p){if(p.uuid)document.getElementById("uuid").textContent=p.uuid;const skin=p.skin||p.textureUrl;if(skin)document.getElementById("player-head").src=skin.replace(/^http:/,"https:")}
+   }
+  }catch(e){}
+ }catch(e){document.getElementById("message").textContent=e.message;location.replace("/?account=login")}
+}
+document.getElementById("logout").addEventListener("click",async function(){const b=this;b.disabled=true;document.getElementById("message").textContent="Oturum kapatılıyor...";try{await api("/api/account/logout",{});location.replace("/")}catch(e){document.getElementById("message").textContent=e.message;b.disabled=false}});
+init();
+</script>
+</body>
+</html>
