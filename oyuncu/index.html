@@ -33,6 +33,13 @@
     .skin-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#888;font-size:11px;pointer-events:none}
     .profile-info{min-width:0;display:flex;flex-direction:column;justify-content:center}
     .profile-heading{padding:8px 4px 20px}
+    .level-card{margin:0 0 16px;padding:17px 18px;border:1px solid rgba(255,116,23,.32);border-radius:14px;background:linear-gradient(120deg,rgba(255,116,23,.13),rgba(255,255,255,.025))}
+    .level-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+    .level-name{font-size:14px;font-weight:900;color:var(--light)}
+    .level-xp{font-size:12px;font-weight:800;color:var(--text)}
+    .level-track{height:9px;overflow:hidden;border-radius:20px;background:rgba(255,255,255,.1)}
+    .level-fill{height:100%;width:0;border-radius:20px;background:linear-gradient(90deg,var(--orange),var(--light));transition:width .5s ease}
+    .level-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:8px;color:var(--muted);font-size:11px}
     #name{font-size:clamp(25px,5vw,34px);font-weight:900;overflow-wrap:anywhere}
     #status{display:inline-block;margin-top:7px;padding:5px 11px;border-radius:30px;background:rgba(255,116,23,.12);color:var(--light);font-size:11px;font-weight:800}
     .uuid{color:#777;font-size:11px;overflow-wrap:anywhere;margin-top:13px}
@@ -82,6 +89,17 @@
             <span id="status">Profil bilgileri alınıyor</span>
             <div class="uuid" id="uuid">UUID: --</div>
           </div>
+          <section class="level-card" aria-label="Oyuncu seviyesi">
+            <div class="level-top">
+              <span class="level-name">⭐ SEVİYE <strong id="player-level">--</strong></span>
+              <span class="level-xp" id="player-total-xp">-- XP</span>
+            </div>
+            <div class="level-track"><div class="level-fill" id="level-fill"></div></div>
+            <div class="level-bottom">
+              <span id="level-current-xp">-- / -- XP</span>
+              <span id="level-remaining">-- XP sonraki seviyeye</span>
+            </div>
+          </section>
           <section class="stats">
             <div class="stat"><span class="ico">⏱️</span><span class="label">Toplam oyun süresi</span><strong class="value" id="playtime">--</strong></div>
             <div class="stat"><span class="ico">🏆</span><span class="label">Oyun süresi sırası</span><strong class="value" id="playrank">--</strong></div>
@@ -219,6 +237,17 @@
             if (statsResponse.ok) {
               const profileData = await statsResponse.json();
               const s = profileData.stats || {};
+              const progress = profileData.levelProgress || {};
+              const level = Number(profileData.level) || 1;
+              const totalXp = Number(profileData.xp) || 0;
+              const currentXp = Number(progress.current) || 0;
+              const requiredXp = Number(progress.required) || 100;
+              const percentage = Math.max(0, Math.min(100, Number(progress.percentage) || 0));
+              put("player-level", level);
+              put("player-total-xp", number(totalXp) + " XP");
+              put("level-current-xp", number(currentXp) + " / " + number(requiredXp) + " XP");
+              put("level-remaining", number(Math.max(0, requiredXp - currentXp)) + " XP sonraki seviyeye");
+              document.getElementById("level-fill").style.width = percentage + "%";
               const number = value => (Number(value) || 0).toLocaleString("tr-TR");
               put("stat-mined", number(s.mined));
               put("stat-killed", number(s.killed));
