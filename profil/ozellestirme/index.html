@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0b0b">
+<title>Profil Özelleştirme | SoraNetwork</title>
+<meta name="description" content="SoraNetwork herkese açık Minecraft profilinin gizlilik ayarlarını yönet.">
+<link rel="icon" href="/sora-logo.webp">
+<style>
+:root{--orange:#ff7417;--light:#ff9a45;--bg:#0b0b0b;--panel:#151515;--muted:#969696}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -12%,rgba(255,116,23,.15),transparent 42%),var(--bg);color:#f5f5f5;font-family:Inter,Arial,sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.topbar{height:74px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(10,10,10,.88);backdrop-filter:blur(14px);display:flex;align-items:center}
+.topbar-inner{width:min(900px,calc(100% - 36px));margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-weight:950;letter-spacing:1px}.brand img{width:39px;height:39px;object-fit:cover;border-radius:11px}.brand span{color:var(--orange)}
+.back{color:#bbb;font-size:13px;font-weight:700}.back:hover{color:var(--light)}
+main{width:min(760px,calc(100% - 32px));margin:48px auto 70px}
+.eyebrow{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
+.intro{color:var(--muted);margin:0 0 25px;font-size:14px;line-height:1.7}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.09);border-radius:17px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+.account-label{color:#aaa;font-size:12px;margin-bottom:20px}
+.account-label strong{color:var(--light)}
+.section-title{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+.section-title:before{content:"";width:4px;height:17px;border-radius:4px;background:var(--orange)}
+.visibility-note{color:#999;font-size:12px;line-height:1.7;margin:0 0 17px}
+.visibility-list{display:grid;gap:9px}
+.visibility-item{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;border:1px solid rgba(255,255,255,.075);background:rgba(255,255,255,.025);border-radius:11px}
+.visibility-item strong{display:block;font-size:13px}
+.visibility-item small{display:block;color:#888;font-size:11px;margin-top:4px;line-height:1.5}
+.visibility-item input{appearance:none;flex:0 0 42px;width:42px;height:24px;border-radius:20px;background:#444;position:relative;cursor:pointer;transition:.2s}
+.visibility-item input:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s}
+.visibility-item input:checked{background:var(--orange)}
+.visibility-item input:checked:before{transform:translateX(18px)}
+.visibility-item input:focus-visible{outline:2px solid var(--light);outline-offset:3px}
+.visibility-item input:disabled{opacity:.55;cursor:wait}
+.visibility-status{min-height:20px;margin-top:14px;color:var(--light);font-size:12px}
+.bottom-actions{display:flex;gap:10px;margin-top:18px}
+.action{display:flex;align-items:center;justify-content:center;min-height:44px;padding:12px 17px;border-radius:10px;border:1px solid rgba(255,116,23,.32);background:rgba(255,116,23,.07);color:var(--light);font-size:12px;font-weight:800;transition:.2s}
+.action:hover{background:rgba(255,116,23,.15);transform:translateY(-1px)}
+.action.primary{background:linear-gradient(100deg,#ff7417,#ff923d);color:#17100b;border:0}
+footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
+@media(max-width:600px){main{margin-top:30px}.card{padding:19px}.bottom-actions{flex-direction:column}.action{width:100%}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner">
+<a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a>
+<a class="back" href="/profil/">← Hesabıma dön</a>
+</div></header>
+<main>
+<div class="eyebrow">SoraNetwork • Hesap merkezi</div>
+<h1>Profil Özelleştirme</h1>
+<p class="intro">Herkese açık Minecraft profilinde hangi bilgilerin görüneceğini buradan yönetebilirsin. Değişiklikler kaydedildiğinde herkese açık profiline uygulanır.</p>
+<section class="card">
+<div class="account-label">Düzenlenen hesap: <strong id="account-name">Yükleniyor...</strong></div>
+<h2 class="section-title">Görünürlük ayarları</h2>
+<p class="visibility-note">Bir ayarı kapattığında ilgili bilgi diğer oyuncuların gördüğü profilinden gizlenir. Bu ayarlar Hesabım sayfasındaki kendi istatistiklerini etkilemez.</p>
+<div class="visibility-list">
+<label class="visibility-item"><span><strong>Seviye ve XP</strong><small>Minecraft seviyesi ve deneyim bilgisi</small></span><input type="checkbox" data-visibility="levelXp" checked aria-label="Seviye ve XP görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Toplam oyun süresi</strong><small>Sunucuda geçirdiğin toplam süre</small></span><input type="checkbox" data-visibility="playtime" checked aria-label="Oyun süresi görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Oyun süresi sırası</strong><small>Oyun süresi liderlik sıralamasındaki yerin</small></span><input type="checkbox" data-visibility="playrank" checked aria-label="Oyun süresi sırası görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Towny bakiyesi</strong><small>Herkese açık profilindeki bakiye bilgisi</small></span><input type="checkbox" data-visibility="balance" checked aria-label="Towny bakiyesi görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Sunucu rütbesi</strong><small>Mevcut sunucu rütben</small></span><input type="checkbox" data-visibility="rank" checked aria-label="Sunucu rütbesi görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Oyun istatistikleri</strong><small>Bloklar, savaş ve diğer oyun istatistikleri</small></span><input type="checkbox" data-visibility="gameStats" checked aria-label="Oyun istatistikleri görünürlüğü"></label>
+<label class="visibility-item"><span><strong>Başarımlar</strong><small>Kazandığın Minecraft başarımları</small></span><input type="checkbox" data-visibility="achievements" checked aria-label="Başarımlar görünürlüğü"></label>
+</div>
+<div class="visibility-status" id="visibility-status" role="status" aria-live="polite"></div>
+<div class="bottom-actions"><a class="action primary" href="/profil/">Hesabıma Dön</a><a class="action" id="public-profile" href="/">Herkese Açık Profilimi Gör ↗</a></div>
+</section>
+<footer>SoraNetwork hesap merkezi • Profil gizlilik ayarları</footer>
+</main>
+<script>
+const API="https://api.soranetwork.com.tr";
+async function api(path,body){const options={method:body?"POST":"GET",credentials:"include"};if(body){options.headers={"Content-Type":"application/json"};options.body=JSON.stringify(body)}const r=await fetch(API+path,options);const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"İşlem gerçekleştirilemedi.");return d}
+let visibilitySaving=false;
+async function saveProfileVisibility(){
+ if(visibilitySaving)return;
+ visibilitySaving=true;
+ const status=document.getElementById("visibility-status");
+ const controls=[...document.querySelectorAll("[data-visibility]")];
+ controls.forEach(control=>control.disabled=true);
+ const settings={};
+ controls.forEach(control=>settings[control.dataset.visibility]=control.checked);
+ status.textContent="Ayarlar kaydediliyor...";
+ try{await api("/api/account/profile-visibility",settings);status.textContent="Gizlilik ayarların kaydedildi."}
+ catch(error){status.textContent="Kaydedilemedi: "+error.message}
+ finally{controls.forEach(control=>control.disabled=false);visibilitySaving=false}
+}
+async function init(){
+ const status=document.getElementById("visibility-status");
+ const controls=[...document.querySelectorAll("[data-visibility]")];
+ try{
+  const me=await api("/api/account/me");
+  if(!me.authenticated){location.replace("/?account=login");return}
+  const name=me.username||"Minecraft oyuncusu";
+  document.getElementById("account-name").textContent=name;
+  document.getElementById("public-profile").href="/oyuncu/?isim="+encodeURIComponent(name);
+  const result=await api("/api/account/profile-visibility");
+  controls.forEach(control=>{control.checked=!!result.settings[control.dataset.visibility]});
+  controls.forEach(control=>control.addEventListener("change",saveProfileVisibility));
+ }catch(error){
+  status.textContent="Ayarlar yüklenemedi: "+error.message;
+  controls.forEach(control=>control.disabled=true);
+  if(/401|oturum|yetki/i.test(error.message))location.replace("/?account=login");
+ }
+}
+init();
+</script>
+</body>
+</html>
