@@ -96,10 +96,8 @@ async function init(){
   const me=await api("/api/account/me");
   if(!me.authenticated){location.replace("/?account=login");return}
   const name=me.username||"Oyuncu";
-  document.getElementById("username").textContent=name;
-  document.getElementById("minecraft-name").textContent=name;
+  let displayName=name;
   document.getElementById("email").textContent=me.email||"Belirtilmemiş";
-  document.getElementById("player-profile").href="/oyuncu/?isim="+encodeURIComponent(name);
   let skinUrl="";
   try{
    const [playersResponse,skinsResponse]=await Promise.all([
@@ -110,7 +108,7 @@ async function init(){
     const raw=await playersResponse.json();
     const list=Array.isArray(raw)?raw:(raw.players||[]);
     const player=list.find(x=>x.name&&x.name.toLowerCase()===name.toLowerCase());
-    if(player&&player.uuid)document.getElementById("uuid").textContent=player.uuid;
+    if(player){displayName=player.name||name;if(player.uuid)document.getElementById("uuid").textContent=player.uuid;}
    }
    if(skinsResponse.ok){
     const rawSkins=await skinsResponse.json();
@@ -119,6 +117,9 @@ async function init(){
     if(skin&&skin.skin)skinUrl=skin.skin.replace(/^http:/,"https:");
    }
   }catch(e){console.warn("Oyuncu skin bilgisi alınamadı:",e)}
+  document.getElementById("username").textContent=displayName;
+  document.getElementById("minecraft-name").textContent=displayName;
+  document.getElementById("player-profile").href="/oyuncu/?isim="+encodeURIComponent(displayName);
   if(skinUrl){
    try{
     const skinview3d=await import("https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/+esm");
@@ -134,7 +135,7 @@ async function init(){
     console.error("3D skin yüklenemedi:",error);
     document.getElementById("account-skin").style.display="none";
     const fallback=document.getElementById("skin-fallback");
-    fallback.src="https://mc-heads.net/avatar/"+encodeURIComponent(name)+"/112";
+    fallback.src="https://mc-heads.net/avatar/"+encodeURIComponent(displayName)+"/112";
     fallback.style.display="block";
    }
   }else{
