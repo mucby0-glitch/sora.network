@@ -145,7 +145,7 @@ async function init(){
   if(uuid)document.getElementById("uuid").textContent=uuid;
   if(skin&&skin.skin)skinUrl=skin.skin.replace(/^http:/,"https:");
   const fmt=value=>(Number(value)||0).toLocaleString("tr-TR");
-  const fmtTime=seconds=>{const total=Math.max(0,Number(seconds)||0),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60);return days>0?days+" gün "+hours+" saat":hours>0?hours+" saat "+minutes+" dk":minutes+" dakika};
+  const fmtTime=seconds=>{const total=Math.max(0,Number(seconds)||0),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60);return days>0?days+" gün "+hours+" saat":hours>0?hours+" saat "+minutes+" dk":minutes+" dakika"};
   document.getElementById("dash-playtime").textContent=played?fmtTime(played.playTimeSeconds):"Veri yok";
   const sorted=[...getList(playData)].sort((a,b)=>(Number(b.playTimeSeconds)||0)-(Number(a.playTimeSeconds)||0));
   const place=sorted.findIndex(x=>same(x.name));
