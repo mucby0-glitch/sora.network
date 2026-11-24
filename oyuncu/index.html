@@ -16,17 +16,17 @@
     body{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(255,116,23,.12),transparent 45%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.6}
     a{color:inherit;text-decoration:none}
     .top{height:76px;border-bottom:1px solid var(--line);background:rgba(10,10,10,.88);backdrop-filter:blur(14px)}
-    .top-inner{width:min(1100px,92%);height:100%;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}
+    .top-inner{width:min(1240px,92%);height:100%;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}
     .brand{font-weight:900;letter-spacing:-.5px;font-size:19px;display:flex;align-items:center;gap:10px}
     .brand img{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,116,23,.5)}
     .brand span{color:var(--orange)}
     .back{font-size:13px;color:var(--light);font-weight:700}
-    main{width:min(900px,92%);margin:55px auto 75px}
+    main{width:min(1080px,92%);margin:55px auto 75px}
     .eyebrow{text-align:center;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
     h1{text-align:center;font-size:clamp(28px,5vw,42px);letter-spacing:-1.5px;margin:8px 0 28px}
     .panel{position:relative;overflow:hidden;border:1px solid rgba(255,116,23,.32);border-radius:20px;background:linear-gradient(145deg,#1b1b1b,#101010);box-shadow:0 20px 70px rgba(0,0,0,.35)}
     .panel:before{content:"";position:absolute;width:320px;height:320px;right:-100px;top:-190px;border-radius:50%;background:rgba(255,116,23,.14);filter:blur(65px);pointer-events:none}
-    .profile-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr);align-items:stretch;gap:24px;padding:24px}
+    .profile-layout{position:relative;z-index:1;display:grid;grid-template-columns:minmax(320px,.95fr) minmax(0,1.05fr);align-items:stretch;gap:28px;padding:28px}
     .skin-stage{position:relative;min-height:470px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid rgba(255,116,23,.2);border-radius:16px;background:radial-gradient(ellipse at 50% 45%,rgba(255,116,23,.13),transparent 68%),rgba(0,0,0,.22)}
     #skin-canvas{display:block;width:100%;height:470px;touch-action:pan-y}
     #skin-fallback{display:none;width:112px;height:112px;image-rendering:pixelated;border-radius:16px;border:2px solid rgba(255,116,23,.55)}
@@ -44,16 +44,16 @@
     button:hover,.button:hover{background:var(--orange);color:#111}
     #message{text-align:center;color:var(--muted);font-size:13px;margin:18px 0;min-height:22px}
     .foot{text-align:center;color:#777;font-size:11px;margin-top:22px}
-    .extra-section{position:relative;z-index:1;margin:0 24px 24px;padding:22px;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.2)}
-    .extra-title{font-size:17px;font-weight:900;margin-bottom:14px}
-    .extra-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-    .extra-stat{padding:13px 8px;text-align:center;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.035)}
-    .extra-stat strong{display:block;color:var(--light);font-size:17px;font-weight:900;overflow-wrap:anywhere}
-    .extra-stat span{display:block;color:var(--muted);font-size:11px;margin-top:3px}
-    .achievement-list{display:flex;flex-wrap:wrap;gap:9px}
-    .achievement{padding:9px 12px;border:1px solid rgba(255,116,23,.25);border-radius:10px;background:rgba(255,116,23,.08);font-size:12px;font-weight:700;color:#ffd0ad}
+    .extra-section{position:relative;z-index:1;margin:20px 0 0;padding:26px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(25,25,25,.96),rgba(13,13,13,.96));box-shadow:0 18px 55px rgba(0,0,0,.22)}
+    .extra-title{font-size:19px;font-weight:900;margin-bottom:18px;display:flex;align-items:center;gap:9px}
+    .extra-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .extra-stat{min-height:88px;padding:15px 9px;text-align:center;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));display:flex;flex-direction:column;justify-content:center;transition:transform .2s,border-color .2s,background .2s}.extra-stat:hover{transform:translateY(-3px);border-color:rgba(255,116,23,.4);background:rgba(255,116,23,.07)}
+    .extra-stat strong{display:block;color:var(--light);font-size:20px;font-weight:900;overflow-wrap:anywhere;letter-spacing:-.5px}
+    .extra-stat span{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+    .achievement-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .achievement{min-width:0;min-height:76px;padding:13px;display:flex;align-items:center;gap:11px;border:1px solid rgba(255,116,23,.24);border-radius:13px;background:linear-gradient(145deg,rgba(255,116,23,.11),rgba(255,255,255,.025));transition:transform .2s,border-color .2s}.achievement:hover{transform:translateY(-3px);border-color:rgba(255,116,23,.6)}.achievement-icon{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:11px;background:rgba(255,116,23,.13);font-size:20px}.achievement-name{display:block;color:#ffd0ad;font-size:12px;font-weight:800;line-height:1.35}.achievement-desc{display:block;color:var(--muted);font-size:10px;line-height:1.4;margin-top:4px}
     .empty-achievements{color:var(--muted);font-size:12px}
-    @media(max-width:700px){.extra-section{margin:0 15px 15px;padding:16px}.extra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:900px){.achievement-list{grid-template-columns:repeat(2,minmax(0,1fr))}}\n    @media(max-width:700px){.extra-section{margin:18px 0 0;padding:17px}.extra-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
     @media(max-width:700px){.profile-layout{grid-template-columns:1fr;gap:15px;padding:15px}.skin-stage{min-height:360px}#skin-canvas{height:360px}.profile-heading{text-align:center;padding:10px 4px 17px}.stats{gap:9px}}
     @media(max-width:560px){main{margin:35px auto 55px}.skin-stage{min-height:330px}#skin-canvas{height:330px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
@@ -232,13 +232,13 @@
               put("stat-fly", (Number(s.flyDistanceKm) || 0).toFixed(2).replace(".", ",") + " km");
 
               const titles = {
-                "minecraft:adventure/kill_a_mob":"Canavar Avcısı",
-                "minecraft:end/elytra":"Gökyüzünün Sınırı",
-                "minecraft:nether/netherite_armor":"Zırhımı Koru",
-                "minecraft:nether/obtain_blaze_rod":"Alevlerin İçinde",
-                "minecraft:story/enter_the_nether":"Nether'e Gir",
-                "minecraft:story/shiny_gear":"Elmas!",
-                "minecraft:story/smelt_iron":"Demir Çağı"
+                "minecraft:adventure/kill_a_mob":{name:"Canavar Avcısı",icon:"⚔️",desc:"Bir canavarı alt et."},
+                "minecraft:end/elytra":{name:"Gökyüzünün Sınırı",icon:"🪽",desc:"Elytra elde et."},
+                "minecraft:nether/netherite_armor":{name:"Zırhımı Koru",icon:"🛡️",desc:"Netherit zırh elde et."},
+                "minecraft:nether/obtain_blaze_rod":{name:"Alevlerin İçinde",icon:"🔥",desc:"Blaze çubuğu elde et."},
+                "minecraft:story/enter_the_nether":{name:"Nether’e Gir",icon:"🌋",desc:"Nether boyutuna adım at."},
+                "minecraft:story/shiny_gear":{name:"Elmas!",icon:"💎",desc:"Elmas zırh elde et."},
+                "minecraft:story/smelt_iron":{name:"Demir Çağı",icon:"⛏️",desc:"Demir külçesi erit."}
               };
               const list = document.getElementById("achievement-list");
               list.replaceChildren();
@@ -252,7 +252,19 @@
                 achievements.forEach(id => {
                   const item = document.createElement("span");
                   item.className = "achievement";
-                  item.textContent = titles[id] || id.split("/").pop().replaceAll("_", " ");
+                  const achievement = titles[id] || {name:id.split("/").pop().replaceAll("_", " "),icon:"🏅",desc:"Kazanılmış başarım"};
+                  const icon = document.createElement("span");
+                  icon.className = "achievement-icon";
+                  icon.textContent = achievement.icon;
+                  const details = document.createElement("span");
+                  const title = document.createElement("span");
+                  title.className = "achievement-name";
+                  title.textContent = achievement.name;
+                  const description = document.createElement("span");
+                  description.className = "achievement-desc";
+                  description.textContent = achievement.desc;
+                  details.append(title, description);
+                  item.append(icon, details);
                   list.appendChild(item);
                 });
               }
