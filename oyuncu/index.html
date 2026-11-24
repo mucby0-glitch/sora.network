@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0b0b">
+  <meta name="description" content="SoraNetwork oyuncu profili ve istatistikleri.">
+  <title>Oyuncu Profili | SoraNetwork</title>
+  <link rel="icon" type="image/webp" href="/sora-logo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0b;--surface:#151515;--surface2:#1d1d1d;--orange:#ff7417;--light:#ff9a45;--text:#f5f5f5;--muted:#a5a5a5;--line:rgba(255,255,255,.09)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{min-height:100vh;background:radial-gradient(ellipse at 50% 0%,rgba(255,116,23,.12),transparent 45%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    .top{height:76px;border-bottom:1px solid var(--line);background:rgba(10,10,10,.88);backdrop-filter:blur(14px)}
+    .top-inner{width:min(1100px,92%);height:100%;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}
+    .brand{font-weight:900;letter-spacing:-.5px;font-size:19px;display:flex;align-items:center;gap:10px}
+    .brand img{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,116,23,.5)}
+    .brand span{color:var(--orange)}
+    .back{font-size:13px;color:var(--light);font-weight:700}
+    main{width:min(900px,92%);margin:55px auto 75px}
+    .eyebrow{text-align:center;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase}
+    h1{text-align:center;font-size:clamp(28px,5vw,42px);letter-spacing:-1.5px;margin:8px 0 28px}
+    .panel{position:relative;overflow:hidden;border:1px solid rgba(255,116,23,.32);border-radius:20px;background:linear-gradient(145deg,#1b1b1b,#101010);box-shadow:0 20px 70px rgba(0,0,0,.35)}
+    .panel:before{content:"";position:absolute;width:320px;height:320px;right:-100px;top:-190px;border-radius:50%;background:rgba(255,116,23,.14);filter:blur(65px);pointer-events:none}
+    .hero{position:relative;z-index:1;text-align:center;padding:38px 25px 28px}
+    #head{width:112px;height:112px;object-fit:contain;image-rendering:pixelated;border-radius:16px;border:2px solid rgba(255,116,23,.55);background:#222;box-shadow:0 0 35px rgba(255,116,23,.16)}
+    #name{font-size:clamp(25px,5vw,34px);font-weight:900;margin-top:13px;overflow-wrap:anywhere}
+    #status{display:inline-block;margin-top:7px;padding:5px 11px;border-radius:30px;background:rgba(255,116,23,.12);color:var(--light);font-size:11px;font-weight:800}
+    .uuid{color:#777;font-size:11px;overflow-wrap:anywhere;margin-top:13px}
+    .stats{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:0 24px 24px}
+    .stat{min-height:112px;padding:18px 12px;text-align:center;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+    .ico{font-size:23px}.label{font-size:12px;color:var(--muted)}.value{font-size:18px;font-weight:900;color:var(--light);overflow-wrap:anywhere}
+    .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:0 20px 25px;position:relative;z-index:1}
+    button,.button{border:1px solid rgba(255,116,23,.4);border-radius:9px;padding:11px 16px;background:rgba(255,116,23,.12);color:var(--light);font:700 13px Inter,Arial,sans-serif;cursor:pointer}
+    button:hover,.button:hover{background:var(--orange);color:#111}
+    #message{text-align:center;color:var(--muted);font-size:13px;margin:18px 0;min-height:22px}
+    .foot{text-align:center;color:#777;font-size:11px;margin-top:22px}
+    @media(max-width:560px){main{margin:35px auto 55px}.hero{padding:30px 15px 24px}.stats{padding:0 14px 18px;gap:9px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="/"><img src="/sora-logo.webp" alt="SoraNetwork">SORA<span>NETWORK</span></a>
+      <a class="back" href="/">← Ana sayfaya dön</a>
+    </div>
+  </header>
+  <main>
+    <div class="eyebrow">SORANETWORK • OYUNCU KARTI</div>
+    <h1>Oyuncu Profili</h1>
+    <div class="panel">
+      <section class="hero">
+        <img id="head" src="https://mc-heads.net/avatar/Steve/112" alt="Minecraft oyuncu kafası">
+        <div id="name">Oyuncu yükleniyor...</div>
+        <span id="status">Profil bilgileri alınıyor</span>
+        <div class="uuid" id="uuid">UUID: --</div>
+      </section>
+      <section class="stats">
+        <div class="stat"><span class="ico">⏱️</span><span class="label">Toplam oyun süresi</span><strong class="value" id="playtime">--</strong></div>
+        <div class="stat"><span class="ico">🏆</span><span class="label">Oyun süresi sırası</span><strong class="value" id="playrank">--</strong></div>
+        <div class="stat"><span class="ico">💰</span><span class="label">Towny bakiyesi</span><strong class="value" id="balance">--</strong></div>
+        <div class="stat"><span class="ico">🛡️</span><span class="label">Sunucu rütbesi</span><strong class="value" id="rank">--</strong></div>
+      </section>
+      <div class="actions">
+        <button type="button" id="copy">🔗 Profil bağlantısını kopyala</button>
+        <a class="button" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord</a>
+      </div>
+    </div>
+    <div id="message" role="status" aria-live="polite"></div>
+    <div class="foot">SoraNetwork oyuncu istatistikleri • Veriler sunucu API'sinden alınır.</div>
+  </main>
+  <script>
+    const API = "https://api.soranetwork.com.tr";
+    const params = new URLSearchParams(location.search);
+    const requestedName = (params.get("isim") || params.get("name") || "").trim();
+
+    const put = (id, value) => { document.getElementById(id).textContent = value; };
+
+    function formatTime(seconds) {
+      const total = Math.max(0, Number(seconds) || 0);
+      const days = Math.floor(total / 86400);
+      const hours = Math.floor((total % 86400) / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+      if (days > 0) return days + " gün " + hours + " saat";
+      if (hours > 0) return hours + " saat " + minutes + " dk";
+      return minutes + " dakika";
+    }
+
+    async function loadProfile() {
+      if (!requestedName) {
+        put("name", "Oyuncu belirtilmedi");
+        put("status", "Geçerli bir profil bağlantısı aç");
+        put("message", "Örnek: /oyuncu/?isim=Nalug0");
+        return;
+      }
+
+      put("name", requestedName);
+      put("status", "Profil yükleniyor...");
+      put("message", "Oyuncu bilgileri getiriliyor...");
+
+      try {
+        const endpoints = ["/api/players", "/api/skins", "/api/playtime", "/api/baltop", "/api/ranks"];
+        const responses = await Promise.all(endpoints.map(path => fetch(API + path, {cache:"no-store"})));
+        if (responses.some(response => !response.ok)) throw new Error("API yanıt vermedi");
+        const [onlineData, skinData, playData, baltopData, rankData] = await Promise.all(responses.map(response => response.json()));
+
+        const same = value => String(value || "").toLowerCase() === requestedName.toLowerCase();
+        const online = (onlineData.players || []).find(p => same(p.name));
+        const skin = (skinData.players || []).find(p => same(p.name));
+        const played = (playData.players || []).find(p => same(p.name));
+        const rich = (baltopData.players || []).find(p => same(p.name));
+        const uuid = (online && online.uuid) || (skin && skin.uuid) || (played && played.uuid) || "";
+        const rankEntry = (rankData.players || []).find(p => p.uuid === uuid);
+
+        if (!online && !skin && !played && !rich) {
+          put("status", "Oyuncu bulunamadı");
+          put("message", "Bu isimle eşleşen bir oyuncu istatistiği bulunamadı.");
+          return;
+        }
+
+        put("name", (online || skin || played || rich).name || requestedName);
+        put("uuid", "UUID: " + (uuid || "Bilinmiyor"));
+        put("status", online ? "🟢 Şu anda çevrimiçi" : "SoraNetwork oyuncusu");
+
+        const head = document.getElementById("head");
+        head.src = "https://mc-heads.net/avatar/" + encodeURIComponent(requestedName) + "/112";
+        if (skin && skin.skin) {
+          const texture = new Image();
+          texture.crossOrigin = "anonymous";
+          texture.onload = () => {
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = canvas.height = 32;
+              const ctx = canvas.getContext("2d");
+              ctx.imageSmoothingEnabled = false;
+              ctx.drawImage(texture, 8, 8, 8, 8, 0, 0, 32, 32);
+              ctx.drawImage(texture, 40, 8, 8, 8, 0, 0, 32, 32);
+              head.src = canvas.toDataURL("image/png");
+            } catch (_) {}
+          };
+          texture.src = skin.skin.replace(/^http:/, "https:");
+        }
+
+        const sorted = [...(playData.players || [])].sort((a,b) => (Number(b.playTimeSeconds)||0) - (Number(a.playTimeSeconds)||0));
+        const position = sorted.findIndex(p => same(p.name));
+        put("playtime", played ? formatTime(played.playTimeSeconds) : "Veri yok");
+        put("playrank", position >= 0 ? "#" + (position + 1) : "-");
+
+        if (rich) {
+          const amount = Number(rich.balance);
+          const currency = baltopData.currency === "dollar" ? "$" : (baltopData.currency || "");
+          put("balance", Number.isFinite(amount) ? amount.toLocaleString("tr-TR") + (currency ? " " + currency : "") : "Veri yok");
+        } else {
+          put("balance", "Sıralamada yok");
+        }
+        put("rank", rankEntry ? (rankEntry.displayName || rankEntry.name || "Tanımlı") : "Veri yok");
+        put("message", "");
+        document.title = (online || skin || played || rich).name + " | SoraNetwork";
+      } catch (error) {
+        console.error("Profil yüklenemedi:", error);
+        put("status", "Veriler yüklenemedi");
+        put("message", "API bağlantısında sorun oluştu. Biraz sonra tekrar deneyebilirsin.");
+      }
+    }
+
+    document.getElementById("copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        put("message", "Profil bağlantısı panoya kopyalandı.");
+      } catch (_) {
+        put("message", "Bağlantı: " + location.href);
+      }
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
