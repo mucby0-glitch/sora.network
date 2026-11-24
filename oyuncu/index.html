@@ -237,6 +237,7 @@
             if (statsResponse.ok) {
               const profileData = await statsResponse.json();
               const s = profileData.stats || {};
+              const number = value => (Number(value) || 0).toLocaleString("tr-TR");
               const progress = profileData.levelProgress || {};
               const level = Number(profileData.level) || 1;
               const totalXp = Number(profileData.xp) || 0;
@@ -248,7 +249,6 @@
               put("level-current-xp", number(currentXp) + " / " + number(requiredXp) + " XP");
               put("level-remaining", number(Math.max(0, requiredXp - currentXp)) + " XP sonraki seviyeye");
               document.getElementById("level-fill").style.width = percentage + "%";
-              const number = value => (Number(value) || 0).toLocaleString("tr-TR");
               put("stat-mined", number(s.mined));
               put("stat-killed", number(s.killed));
               put("stat-deaths", number(s.deaths));
