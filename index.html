@@ -2171,7 +2171,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     function closeAccountModal() { accountModal.classList.remove("active"); }
 
-    accountButton.addEventListener("click", openAccountModal);
+    accountButton.addEventListener("click", async () => {
+        accountButton.disabled = true;
+        try {
+            const data = await apiRequest("/api/account/me");
+            if (data.authenticated) {
+                window.location.href = "/profil/";
+                return;
+            }
+        } catch (error) {
+            // Oturum yoksa giriş penceresini aç.
+        }
+        accountButton.disabled = false;
+        openAccountModal();
+    });
     accountClose.addEventListener("click", closeAccountModal);
     accountModal.addEventListener("click", event => {
         if (event.target === accountModal) closeAccountModal();
