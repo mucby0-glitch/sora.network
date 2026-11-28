@@ -43,7 +43,6 @@
     .level-bottom{display:flex;justify-content:space-between;gap:10px;margin-top:8px;color:var(--muted);font-size:11px}
     #name{font-size:clamp(25px,5vw,34px);font-weight:900;overflow-wrap:anywhere}
     #status{display:inline-block;margin-top:7px;padding:5px 11px;border-radius:30px;background:rgba(255,116,23,.12);color:var(--light);font-size:11px;font-weight:800}
-    .uuid{color:#777;font-size:11px;overflow-wrap:anywhere;margin-top:13px}
     .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
     .stat{min-height:112px;padding:18px 12px;text-align:center;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
     .ico{font-size:23px}.label{font-size:12px;color:var(--muted)}.value{font-size:18px;font-weight:900;color:var(--light);overflow-wrap:anywhere}
@@ -88,7 +87,6 @@
           <div class="profile-heading">
             <div id="name">Oyuncu yükleniyor...</div>
             <span id="status">Profil bilgileri alınıyor</span>
-            <div class="uuid" id="uuid">UUID: --</div>
           </div>
           <section class="level-card" aria-label="Oyuncu seviyesi">
             <div class="level-top">
@@ -222,7 +220,6 @@
         }
 
         put("name", (online || skin || played || rich).name || requestedName);
-        put("uuid", "UUID: " + (uuid || "Bilinmiyor"));
         put("status", online ? "🟢 Şu anda çevrimiçi" : "SoraNetwork oyuncusu");
 
         const skinUrl = skin && skin.skin ? skin.skin.replace(/^http:/, "https:") : "";
