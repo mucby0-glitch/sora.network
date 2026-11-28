@@ -193,6 +193,92 @@ h1 span {
     color: #35d07f;
     flex-shrink: 0;
 }
+
+/* Oyuncu bulucu */
+.player-finder {
+    position: relative;
+    width: min(100%, 520px);
+    margin-top: 22px;
+    z-index: 5;
+}
+.player-finder-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #c9c9c9;
+    font-size: 12px;
+    font-weight: 700;
+}
+.player-finder-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    min-height: 48px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 10px;
+    background: rgba(24,24,24,.92);
+    transition: border-color .2s, box-shadow .2s;
+}
+.player-finder-input-wrap:focus-within {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,116,23,.12);
+}
+.player-finder-input-wrap span { color: var(--orange); font-size: 18px; }
+#player-finder-input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+}
+#player-finder-input::placeholder { color: #777; }
+.player-finder-results {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    max-height: 310px;
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid rgba(255,116,23,.3);
+    border-radius: 11px;
+    background: #171717;
+    box-shadow: 0 18px 45px rgba(0,0,0,.5);
+}
+.player-finder-results.open { display: block; }
+.player-finder-result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+}
+.player-finder-result:hover, .player-finder-result:focus-visible {
+    outline: 0;
+    background: rgba(255,116,23,.12);
+}
+.player-finder-result img {
+    width: 34px;
+    height: 34px;
+    image-rendering: pixelated;
+    border-radius: 5px;
+}
+.player-finder-result-name { flex: 1; font-size: 13px; font-weight: 750; }
+.player-finder-result-status { color: #888; font-size: 10px; }
+.player-finder-empty { padding: 12px; color: #999; font-size: 12px; }
+@media(max-width:850px) {
+    .player-finder { margin: 20px auto 0; text-align: left; }
+}
 section{padding:82px 0}
 .section-head{text-align:center;margin-bottom:38px}
 .section-head .kicker{font-size:10px}
@@ -1490,6 +1576,14 @@ body[data-page] main { min-height: 65vh; }
   <a class="btn btn-primary" href="/#modes">Sunucumuzu keşfet <span>→</span></a>
   <a class="btn btn-outline" href="https://discord.gg/qF258brRq" target="_blank" rel="noopener">Discord'a katıl</a>
 </div>
+      <div class="player-finder">
+        <label class="player-finder-label" for="player-finder-input">OYUNCU BUL</label>
+        <div class="player-finder-input-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="player-finder-input" type="search" placeholder="Oyuncu adı yaz..." autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="player-finder-results">
+        </div>
+        <div id="player-finder-results" class="player-finder-results" role="listbox" aria-label="Oyuncu arama sonuçları"></div>
+      </div>
       <div class="quick-info">
         <div class="info-pill server-info">
   <small>Sunucu durumu</small>
@@ -2171,6 +2265,143 @@ playerModal.addEventListener("click", (event) => {
         playerModal.style.display = "none";
     }
 });
+
+
+/* Oyuncu bulucu: kayıtlı oyuncuları ortak API listelerinden derler. */
+(() => {
+    const input = document.getElementById("player-finder-input");
+    const results = document.getElementById("player-finder-results");
+    if (!input || !results) return;
+
+    let playerIndex = [];
+    let loaded = false;
+    let loading = false;
+    let debounceTimer;
+
+    function closeResults() {
+        results.classList.remove("open");
+        input.setAttribute("aria-expanded", "false");
+    }
+
+    function renderResults(query) {
+        const normalized = query.trim().toLocaleLowerCase("tr-TR");
+        results.replaceChildren();
+        if (!normalized) {
+            closeResults();
+            return;
+        }
+
+        const matches = playerIndex
+            .filter(player => player.name.toLocaleLowerCase("tr-TR").includes(normalized))
+            .sort((a, b) => Number(b.online) - Number(a.online) || a.name.localeCompare(b.name, "tr"))
+            .slice(0, 8);
+
+        if (!matches.length) {
+            const empty = document.createElement("div");
+            empty.className = "player-finder-empty";
+            empty.textContent = "Bu isimle eşleşen oyuncu bulunamadı.";
+            results.appendChild(empty);
+        } else {
+            matches.forEach(player => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "player-finder-result";
+                button.setAttribute("role", "option");
+
+                const head = document.createElement("img");
+                head.src = "https://mc-heads.net/avatar/" + encodeURIComponent(player.name) + "/34";
+                head.alt = "";
+                head.loading = "lazy";
+
+                const name = document.createElement("span");
+                name.className = "player-finder-result-name";
+                name.textContent = player.name;
+
+                const status = document.createElement("span");
+                status.className = "player-finder-result-status";
+                status.textContent = player.online ? "● Çevrimiçi" : "Çevrimdışı";
+
+                button.append(head, name, status);
+                button.addEventListener("click", async () => {
+                    closeResults();
+                    try {
+                        const accountResponse = await fetch(
+                            "https://api.soranetwork.com.tr/api/account/me",
+                            { credentials: "include", cache: "no-store" }
+                        );
+                        const accountData = await accountResponse.json();
+                        if (accountResponse.ok && accountData.authenticated) {
+                            window.location.href = "/oyuncu/?isim=" + encodeURIComponent(player.name);
+                            return;
+                        }
+                    } catch (error) {
+                        console.warn("Hesap oturumu kontrol edilemedi:", error);
+                    }
+                    alert("Oyuncu profillerini görüntülemek için önce SoraNetwork hesabına giriş yapmalısın.");
+                    document.getElementById("site-account-button")?.click();
+                });
+                results.appendChild(button);
+            });
+        }
+        results.classList.add("open");
+        input.setAttribute("aria-expanded", "true");
+    }
+
+    async function loadPlayerIndex() {
+        if (loaded || loading) return;
+        loading = true;
+        try {
+            const endpoints = ["players", "skins", "playtime", "baltop", "ranks"];
+            const responses = await Promise.all(endpoints.map(endpoint =>
+                fetch("https://api.soranetwork.com.tr/api/" + endpoint, { cache: "no-store" })
+            ));
+            const datasets = await Promise.all(responses.map(response => {
+                if (!response.ok) return null;
+                return response.json().catch(() => null);
+            }));
+
+            const players = new Map();
+            datasets.forEach((data, index) => {
+                const list = Array.isArray(data?.players) ? data.players : [];
+                list.forEach(player => {
+                    if (!player || typeof player.name !== "string" || !player.name.trim()) return;
+                    const key = player.name.toLocaleLowerCase("tr-TR");
+                    const existing = players.get(key) || { name: player.name, online: false };
+                    if (index === 0) existing.online = true;
+                    players.set(key, existing);
+                });
+            });
+            playerIndex = Array.from(players.values());
+            loaded = true;
+            if (input.value.trim()) renderResults(input.value);
+        } catch (error) {
+            console.error("Oyuncu listesi alınamadı:", error);
+            results.innerHTML = '<div class="player-finder-empty">Oyuncu listesi şu anda alınamıyor.</div>';
+            results.classList.add("open");
+        } finally {
+            loading = false;
+        }
+    }
+
+    input.addEventListener("focus", loadPlayerIndex);
+    input.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            if (!loaded) loadPlayerIndex();
+            else renderResults(input.value);
+        }, 180);
+    });
+    input.addEventListener("keydown", event => {
+        if (event.key === "Escape") closeResults();
+        if (event.key === "Enter") {
+            const first = results.querySelector(".player-finder-result");
+            if (first) first.click();
+        }
+    });
+    document.addEventListener("click", event => {
+        if (!event.target.closest(".player-finder")) closeResults();
+    });
+})();
 
 checkServer();
 setInterval(checkServer, 60000);
