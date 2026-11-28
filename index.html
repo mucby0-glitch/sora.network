@@ -2120,9 +2120,24 @@ async function checkServer() {
                 playerName.textContent = player.name;
                 item.append(head, playerName);
                 item.style.cursor = "pointer";
-                item.addEventListener("click", () => {
-                    window.location.href =
-                        "/oyuncu/?isim=" + encodeURIComponent(player.name);
+                item.addEventListener("click", async () => {
+                    try {
+                        const accountResponse = await fetch(
+                            "https://api.soranetwork.com.tr/api/account/me",
+                            { credentials: "include", cache: "no-store" }
+                        );
+                        const accountData = await accountResponse.json();
+                        if (accountResponse.ok && accountData.authenticated) {
+                            window.location.href =
+                                "/oyuncu/?isim=" + encodeURIComponent(player.name);
+                            return;
+                        }
+                    } catch (accountError) {
+                        console.warn("Hesap oturumu kontrol edilemedi:", accountError);
+                    }
+
+                    alert("Oyuncu profillerini görüntülemek için önce SoraNetwork hesabına giriş yapmalısın.");
+                    document.getElementById("site-account-button")?.click();
                 });
                 playerList.appendChild(item);
             });
