@@ -2508,7 +2508,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const data = await apiRequest("/api/account/me");
             if (data.authenticated) {
-                window.location.href = "/profil/";
+                window.location.href = "/hesap/";
                 return;
             }
         } catch (error) {
