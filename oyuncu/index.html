@@ -67,7 +67,7 @@
     @media(max-width:560px){main{margin:35px auto 55px}.skin-stage{min-height:330px}#skin-canvas{height:330px}.stat{min-height:100px;padding:13px 7px}.value{font-size:15px}.top{height:66px}.brand{font-size:16px}.brand img{width:36px;height:36px}}
   </style>
 </head>
-<body>
+<body style="visibility:hidden">
   <header class="top">
     <div class="top-inner">
       <a class="brand" href="/"><img src="/sora-logo.webp" alt="SoraNetwork">SORA<span>NETWORK</span></a>
@@ -365,7 +365,39 @@
       }
     });
 
-    loadProfile();
+    async function verifyAccountAndLoadProfile() {
+      try {
+        const response = await fetch(API + "/api/account/me", {
+          credentials: "include",
+          cache: "no-store"
+        });
+        const data = await response.json().catch(() => ({}));
+        if (response.ok && data.authenticated) {
+          document.body.style.visibility = "visible";
+          loadProfile();
+          return;
+        }
+      } catch (error) {
+        console.warn("Hesap oturumu kontrol edilemedi:", error);
+      }
+
+      document.querySelector("main").innerHTML = `
+        <div class="eyebrow">SORANETWORK • ÜYE ERİŞİMİ</div>
+        <h1>Oyuncu Profilleri</h1>
+        <section class="panel" style="padding:34px 24px;text-align:center">
+          <div style="font-size:42px;margin-bottom:12px">🔒</div>
+          <h2 style="font-size:22px;margin-bottom:10px">Giriş yapmalısın</h2>
+          <p style="color:var(--muted);max-width:520px;margin:0 auto 22px">
+            Oyuncu profillerini görüntülemek için SoraNetwork hesabına giriş yapmalısın.
+            Henüz hesabın yoksa ücretsiz bir hesap oluşturabilirsin.
+          </p>
+          <a class="button" href="/?hesap=giris">Ana sayfaya dön ve Hesabım bölümünü aç</a>
+        </section>
+      `;
+      document.body.style.visibility = "visible";
+    }
+
+    verifyAccountAndLoadProfile();
   </script>
 </body>
 </html>
