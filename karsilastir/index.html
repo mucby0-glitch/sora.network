@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0b0b">
+<title>Oyuncu Karşılaştırma | SoraNetwork</title><meta name="description" content="SoraNetwork oyuncularının oyun istatistiklerini karşılaştır."><link rel="icon" href="/sora-logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0b;--panel:#151515;--panel2:#1d1d1d;--orange:#ff7417;--light:#ff9a45;--text:#f5f5f5;--muted:#999;--line:rgba(255,255,255,.09)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,rgba(255,116,23,.15),transparent 42%),var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}a{color:inherit;text-decoration:none}button,select{font:inherit}
+header{height:72px;border-bottom:1px solid var(--line);background:rgba(10,10,10,.9);display:flex;align-items:center}.nav{width:min(1120px,calc(100% - 36px));margin:auto;display:flex;justify-content:space-between;align-items:center}.brand{display:flex;align-items:center;gap:10px;font-weight:950;letter-spacing:.5px}.brand img{width:38px;height:38px;border-radius:10px}.brand span{color:var(--orange)}.back{font-size:12px;color:#bbb;font-weight:750}.back:hover{color:var(--light)}
+main{width:min(1050px,calc(100% - 36px));margin:52px auto 80px}.eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;color:var(--orange)}h1{font-size:clamp(30px,5vw,46px);letter-spacing:-1.6px;margin:8px 0}.intro{font-size:13px;line-height:1.7;color:var(--muted);margin:0 0 26px}
+.selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.select-card{background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.player-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.player-head img{width:48px;height:48px;border-radius:10px;image-rendering:pixelated;background:#111}.player-head strong{display:block;font-size:14px}.player-head small{color:#888;font-size:10px}.select-card label{display:block;color:#aaa;font-size:11px;font-weight:800;margin-bottom:7px}.select-card select{width:100%;background:#101010;color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:12px;outline:none}.select-card select:focus{border-color:var(--orange)}
+.actions{display:flex;justify-content:center;margin:18px 0 25px}.compare-btn{border:0;border-radius:10px;padding:13px 24px;background:linear-gradient(100deg,var(--orange),var(--light));color:#1a1009;font-weight:900;cursor:pointer;box-shadow:0 8px 30px rgba(255,116,23,.15)}.compare-btn:disabled{opacity:.5;cursor:wait}
+.result{display:none;background:rgba(20,20,20,.88);border:1px solid var(--line);border-radius:17px;padding:20px}.result.show{display:block}.result-title{font-size:14px;font-weight:900;margin:0 0 15px}.versus{display:grid;grid-template-columns:1fr 70px 1fr;align-items:center;text-align:center;margin-bottom:16px}.versus-person{min-width:0}.versus-person img{width:58px;height:58px;image-rendering:pixelated;border-radius:12px;background:#111}.versus-person strong{display:block;font-size:14px;margin-top:7px;overflow-wrap:anywhere}.vs{color:var(--orange);font-size:17px;font-weight:950}
+.metric{display:grid;grid-template-columns:1fr minmax(110px,1.1fr) 1fr;gap:10px;align-items:center;padding:13px 10px;border-top:1px solid var(--line)}.metric-value{font-size:13px;font-weight:850;overflow-wrap:anywhere}.metric-value:first-child{text-align:right}.metric-value:last-child{text-align:left}.metric-name{text-align:center;color:#999;font-size:10px;font-weight:800}.winner{color:var(--light)}.tie{color:#aaa}.message{text-align:center;min-height:22px;color:var(--light);font-size:12px;margin:8px 0 14px}.foot{text-align:center;color:#666;font-size:10px;margin-top:22px}
+@media(max-width:650px){main{margin-top:32px}.selector-grid{grid-template-columns:1fr}.metric{grid-template-columns:1fr 95px 1fr;gap:5px;padding:12px 4px}.metric-value{font-size:11px}.metric-name{font-size:9px}.result{padding:14px}.versus{grid-template-columns:1fr 44px 1fr}}
+</style></head>
+<body>
+<header><div class="nav"><a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a><a class="back" href="/hesap/">← Genel Bakış</a></div></header>
+<main>
+<div class="eyebrow">SORANETWORK • OYUNCU MERKEZİ</div><h1>Oyuncu Karşılaştırma</h1><p class="intro">İki oyuncuyu seç, istatistiklerini yan yana gör. Hangi alanda kimin önde olduğunu keşfet.</p>
+<div class="selector-grid">
+<section class="select-card"><div class="player-head"><img id="head-a" src="https://mc-heads.net/avatar/Steve/96" alt=""><div><strong id="name-a">1. Oyuncu</strong><small>Turuncu takım</small></div></div><label for="player-a">Birinci oyuncu</label><select id="player-a"><option value="">Oyuncular yükleniyor...</option></select></section>
+<section class="select-card"><div class="player-head"><img id="head-b" src="https://mc-heads.net/avatar/Alex/96" alt=""><div><strong id="name-b">2. Oyuncu</strong><small>İkinci oyuncu</small></div></div><label for="player-b">İkinci oyuncu</label><select id="player-b"><option value="">Oyuncular yükleniyor...</option></select></section>
+</div>
+<div class="actions"><button class="compare-btn" id="compare" disabled>Oyuncuları Karşılaştır</button></div>
+<div class="message" id="message" role="status" aria-live="polite">Oyuncu listesi yükleniyor...</div>
+<section class="result" id="result"><h2 class="result-title">Karşılaştırma Sonucu</h2><div class="versus"><div class="versus-person"><img id="result-head-a" src="" alt=""><strong id="result-name-a"></strong></div><div class="vs">VS</div><div class="versus-person"><img id="result-head-b" src="" alt=""><strong id="result-name-b"></strong></div></div><div id="metrics"></div></section>
+<div class="foot">SoraNetwork • İstatistikler sunucu verilerinden alınır.</div>
+</main>
+<script>
+const API="https://api.soranetwork.com.tr";
+const $=id=>document.getElementById(id);
+const cleanArray=d=>Array.isArray(d)?d:(Array.isArray(d?.players)?d.players:[]);
+const same=(a,b)=>String(a||"").toLowerCase()===String(b||"").toLowerCase();
+const fmt=n=>(Number(n)||0).toLocaleString("tr-TR");
+const fmtTime=s=>{s=Math.max(0,Number(s)||0);const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?d+" gün "+h+" saat":h?h+" saat "+m+" dk":m+" dakika"};
+let players=[],data={};
+function setHead(side,name){$("head-"+side).src="https://mc-heads.net/avatar/"+encodeURIComponent(name||"Steve")+"/96";$("name-"+side).textContent=name||"Oyuncu seçilmedi"}
+function optionChange(side){const name=$( "player-"+side).value;setHead(side,name)}
+async function get(path,auth=false){const r=await fetch(API+path,{credentials:auth?"include":"same-origin",cache:"no-store"});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||("HTTP "+r.status));return d}
+async function init(){
+ try{
+  const me=await get("/api/account/me",true);if(!me.authenticated){location.replace("/?account=login");return}
+  const [play,baltop,ranks,skins]=await Promise.all([get("/api/playtime"),get("/api/baltop"),get("/api/ranks"),get("/api/skins")]);
+  data.play=cleanArray(play);data.baltop=cleanArray(baltop);data.ranks=cleanArray(ranks);data.skins=cleanArray(skins);
+  const names=new Map();
+  [data.play,data.baltop,data.ranks,data.skins].forEach(arr=>arr.forEach(p=>{if(p.name)names.set(String(p.name).toLowerCase(),p.name)}));
+  players=[...names.values()].sort((a,b)=>a.localeCompare(b,"tr"));
+  if(!players.length)throw new Error("Karşılaştırılacak oyuncu bulunamadı.");
+  ["a","b"].forEach((side,index)=>{const sel=$("player-"+side);sel.innerHTML="";players.forEach(name=>{const o=document.createElement("option");o.value=name;o.textContent=name;sel.appendChild(o)});sel.value=index===0?players[0]:(players.find(n=>!same(n,players[0]))||players[0]);sel.addEventListener("change",()=>optionChange(side));optionChange(side)});
+  $("compare").disabled=false;$("message").textContent=players.length+" oyuncu bulundu. İki oyuncu seçip karşılaştırabilirsin.";
+ }catch(e){$("message").textContent=e.message}
+}
+function find(arr,name){return arr.find(p=>same(p.name,name))}
+function value(v){return v===null||v===undefined||v===""?"Veri yok":String(v)}
+async function compare(){
+ const a=$("player-a").value,b=$("player-b").value;if(!a||!b)return;
+ if(same(a,b)){$("message").textContent="Karşılaştırmak için iki farklı oyuncu seç.";return}
+ $("compare").disabled=true;$("message").textContent="Oyuncu verileri karşılaştırılıyor...";
+ try{
+  const pa=find(data.play,a),pb=find(data.play,b),ba=find(data.baltop,a),bb=find(data.baltop,b);
+  const sa=find(data.skins,a),sb=find(data.skins,b);
+  const ra=data.ranks.find(p=>same(p.name,a)||(sa&&p.uuid===sa.uuid)),rb=data.ranks.find(p=>same(p.name,b)||(sb&&p.uuid===sb.uuid));
+  const uuidA=(sa&&sa.uuid)||(ra&&ra.uuid),uuidB=(sb&&sb.uuid)||(rb&&rb.uuid);
+  const [statsA,statsB]=await Promise.all([uuidA?get("/api/profile-stats?uuid="+encodeURIComponent(uuidA),true).catch(()=>null):null,uuidB?get("/api/profile-stats?uuid="+encodeURIComponent(uuidB),true).catch(()=>null):null]);
+  const sorted=[...data.play].sort((x,y)=>(Number(y.playTimeSeconds)||0)-(Number(x.playTimeSeconds)||0));
+  const rankA=sorted.findIndex(p=>same(p.name,a))+1,rankB=sorted.findIndex(p=>same(p.name,b))+1;
+  const balA=Number(ba?.balance),balB=Number(bb?.balance);
+  const metrics=[
+   ["Minecraft Seviyesi",statsA?.minecraftLevel,statsB?.minecraftLevel,"number"],
+   ["Toplam Minecraft XP",statsA?.minecraftXpTotal,statsB?.minecraftXpTotal,"number"],
+   ["Oyun Süresi",pa?.playTimeSeconds,pb?.playTimeSeconds,"time"],
+   ["Oyun Süresi Sırası",rankA||null,rankB||null,"rank"],
+   ["Towny Bakiyesi",Number.isFinite(balA)?balA:null,Number.isFinite(balB)?balB:null,"balance"],
+   ["Sunucu Rütbesi",ra?.displayName||ra?.name,rb?.displayName||rb?.name,"text"]
+  ];
+  $("result-head-a").src="https://mc-heads.net/avatar/"+encodeURIComponent(a)+"/96";$("result-head-b").src="https://mc-heads.net/avatar/"+encodeURIComponent(b)+"/96";
+  $("result-name-a").textContent=a;$("result-name-b").textContent=b;
+  $("metrics").innerHTML="";
+  metrics.forEach(([label,av,bv,type])=>{
+   let left=av,right=bv,win="tie";
+   if(type==="time"){left=av==null?"Veri yok":fmtTime(av);right=bv==null?"Veri yok":fmtTime(bv)}
+   else if(type==="balance"){left=av==null?"Veri yok":fmt(av)+" $";right=bv==null?"Veri yok":fmt(bv)+" $"}
+   else if(type==="number"){left=value(av);right=value(bv)}
+   else if(type==="rank"){left=av==null?"Veri yok":"#"+av;right=bv==null?"Veri yok":"#"+bv}
+   if(type==="rank"&&av!=null&&bv!=null)win=av<bv?"a":bv<av?"b":"tie";
+   else if(["time","balance","number"].includes(type)&&av!=null&&bv!=null)win=Number(av)>Number(bv)?"a":Number(bv)>Number(av)?"b":"tie";
+   const row=document.createElement("div");row.className="metric";
+   const l=document.createElement("div");l.className="metric-value "+(win==="a"?"winner":"");l.textContent=left;
+   const mid=document.createElement("div");mid.className="metric-name";mid.textContent=label;
+   const r=document.createElement("div");r.className="metric-value "+(win==="b"?"winner":"");r.textContent=right;
+   row.append(l,mid,r);$("metrics").appendChild(row);
+  });
+  $("result").classList.add("show");$("message").textContent="Karşılaştırma hazır. Turuncu renkle gösterilen değer o alanda önde.";
+ }catch(e){$("message").textContent="Karşılaştırma yapılamadı: "+e.message}
+ finally{$("compare").disabled=false}
+}
+$("compare").addEventListener("click",compare);init();
+</script></body></html>
