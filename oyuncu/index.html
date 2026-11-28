@@ -272,7 +272,7 @@
 
         if (uuid) {
           try {
-            const statsResponse = await fetch(API + "/api/profile-stats?uuid=" + encodeURIComponent(uuid), {cache:"no-store"});
+            const statsResponse = await fetch(API + "/api/profile-stats?uuid=" + encodeURIComponent(uuid), {credentials:"include", cache:"no-store"});
             if (statsResponse.ok) {
               const profileData = await statsResponse.json();
               const s = profileData.stats || {};
