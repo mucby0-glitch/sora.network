@@ -15,7 +15,7 @@ a{color:inherit;text-decoration:none}
 .topbar{height:74px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(10,10,10,.88);backdrop-filter:blur(14px);display:flex;align-items:center}
 .topbar-inner{width:min(1120px,calc(100% - 36px));margin:auto;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:11px;font-weight:950;letter-spacing:1px}.brand img{width:39px;height:39px;object-fit:cover;border-radius:11px}.brand span{color:var(--orange)}
-.back{color:#bbb;font-size:13px;font-weight:700}.back:hover{color:var(--light)}
+.top-actions{display:flex;align-items:center;gap:10px}.back{color:#bbb;font-size:13px;font-weight:700}.back:hover{color:var(--light)}.overview-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid rgba(255,116,23,.38);border-radius:9px;background:rgba(255,116,23,.09);color:var(--light);font-size:12px;font-weight:850;transition:.2s}.overview-link:hover{background:rgba(255,116,23,.17);transform:translateY(-1px)}.dashboard,.card[style*="margin-top:18px"]{display:none!important}
 main{width:min(1000px,calc(100% - 32px));margin:48px auto 70px}
 .eyebrow{color:var(--orange);font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase}
 h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
@@ -64,7 +64,7 @@ footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
 <body>
 <header class="topbar"><div class="topbar-inner">
 <a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a>
-<a class="back" href="/">← Ana sayfaya dön</a>
+<div class="top-actions"><a class="overview-link" href="/hesap/">▦ Genel Bakış</a><a class="back" href="/">← Ana sayfaya dön</a></div>
 </div></header>
 <main>
 <div class="eyebrow">SoraNetwork • Hesap merkezi</div>
