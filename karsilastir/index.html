@@ -64,28 +64,31 @@ async function compare(){
   const ra=data.ranks.find(p=>same(p.name,a)||(sa&&p.uuid===sa.uuid)),rb=data.ranks.find(p=>same(p.name,b)||(sb&&p.uuid===sb.uuid));
   const uuidA=(sa&&sa.uuid)||(ra&&ra.uuid),uuidB=(sb&&sb.uuid)||(rb&&rb.uuid);
   const [statsA,statsB]=await Promise.all([uuidA?get("/api/profile-stats?uuid="+encodeURIComponent(uuidA),true).catch(()=>null):null,uuidB?get("/api/profile-stats?uuid="+encodeURIComponent(uuidB),true).catch(()=>null):null]);
+  const defaultVisibility={levelXp:true,playtime:true,playrank:true,balance:true,rank:true};
+  const [visibilityA,visibilityB]=await Promise.all([a,b].map(async name=>{try{const v=await get("/api/profile-visibility?username="+encodeURIComponent(name));return {...defaultVisibility,...(v.settings||{})}}catch{return {...defaultVisibility}}}));
   const sorted=[...data.play].sort((x,y)=>(Number(y.playTimeSeconds)||0)-(Number(x.playTimeSeconds)||0));
   const rankA=sorted.findIndex(p=>same(p.name,a))+1,rankB=sorted.findIndex(p=>same(p.name,b))+1;
   const balA=Number(ba?.balance),balB=Number(bb?.balance);
   const metrics=[
-   ["Minecraft Seviyesi",statsA?.minecraftLevel,statsB?.minecraftLevel,"number"],
-   ["Toplam Minecraft XP",statsA?.minecraftXpTotal,statsB?.minecraftXpTotal,"number"],
-   ["Oyun Süresi",pa?.playTimeSeconds,pb?.playTimeSeconds,"time"],
-   ["Oyun Süresi Sırası",rankA||null,rankB||null,"rank"],
-   ["Towny Bakiyesi",Number.isFinite(balA)?balA:null,Number.isFinite(balB)?balB:null,"balance"],
-   ["Sunucu Rütbesi",ra?.displayName||ra?.name,rb?.displayName||rb?.name,"text"]
+   ["Minecraft Seviyesi",statsA?.minecraftLevel,statsB?.minecraftLevel,"number","levelXp"],
+   ["Toplam Minecraft XP",statsA?.minecraftXpTotal,statsB?.minecraftXpTotal,"number","levelXp"],
+   ["Oyun Süresi",pa?.playTimeSeconds,pb?.playTimeSeconds,"time","playtime"],
+   ["Oyun Süresi Sırası",rankA||null,rankB||null,"rank","playrank"],
+   ["Towny Bakiyesi",Number.isFinite(balA)?balA:null,Number.isFinite(balB)?balB:null,"balance","balance"],
+   ["Sunucu Rütbesi",ra?.displayName||ra?.name,rb?.displayName||rb?.name,"text","rank"]
   ];
   $("result-head-a").src="https://mc-heads.net/avatar/"+encodeURIComponent(a)+"/96";$("result-head-b").src="https://mc-heads.net/avatar/"+encodeURIComponent(b)+"/96";
   $("result-name-a").textContent=a;$("result-name-b").textContent=b;
   $("metrics").innerHTML="";
-  metrics.forEach(([label,av,bv,type])=>{
-   let left=av,right=bv,win="tie";
+  metrics.forEach(([label,av,bv,type,setting])=>{
+   const allowedA=visibilityA[setting]!==false,allowedB=visibilityB[setting]!==false;
+   let left=allowedA?av:"Gizli",right=allowedB?bv:"Gizli",win="tie";
    if(type==="time"){left=av==null?"Veri yok":fmtTime(av);right=bv==null?"Veri yok":fmtTime(bv)}
    else if(type==="balance"){left=av==null?"Veri yok":fmt(av)+" $";right=bv==null?"Veri yok":fmt(bv)+" $"}
    else if(type==="number"){left=value(av);right=value(bv)}
    else if(type==="rank"){left=av==null?"Veri yok":"#"+av;right=bv==null?"Veri yok":"#"+bv}
-   if(type==="rank"&&av!=null&&bv!=null)win=av<bv?"a":bv<av?"b":"tie";
-   else if(["time","balance","number"].includes(type)&&av!=null&&bv!=null)win=Number(av)>Number(bv)?"a":Number(bv)>Number(av)?"b":"tie";
+   if(allowedA&&allowedB&&type==="rank"&&av!=null&&bv!=null)win=av<bv?"a":bv<av?"b":"tie";
+   else if(allowedA&&allowedB&&["time","balance","number"].includes(type)&&av!=null&&bv!=null)win=Number(av)>Number(bv)?"a":Number(bv)>Number(av)?"b":"tie";
    const row=document.createElement("div");row.className="metric";
    const l=document.createElement("div");l.className="metric-value "+(win==="a"?"winner":"");l.textContent=left;
    const mid=document.createElement("div");mid.className="metric-name";mid.textContent=label;
