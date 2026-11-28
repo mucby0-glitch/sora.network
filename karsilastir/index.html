@@ -87,6 +87,7 @@ async function compare(){
    else if(type==="balance"){left=av==null?"Veri yok":fmt(av)+" $";right=bv==null?"Veri yok":fmt(bv)+" $"}
    else if(type==="number"){left=value(av);right=value(bv)}
    else if(type==="rank"){left=av==null?"Veri yok":"#"+av;right=bv==null?"Veri yok":"#"+bv}
+   if(!allowedA)left="Gizli";if(!allowedB)right="Gizli";
    if(allowedA&&allowedB&&type==="rank"&&av!=null&&bv!=null)win=av<bv?"a":bv<av?"b":"tie";
    else if(allowedA&&allowedB&&["time","balance","number"].includes(type)&&av!=null&&bv!=null)win=Number(av)>Number(bv)?"a":Number(bv)>Number(av)?"b":"tie";
    const row=document.createElement("div");row.className="metric";
