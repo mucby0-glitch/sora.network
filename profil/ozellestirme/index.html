@@ -43,11 +43,21 @@ h1{font-size:clamp(28px,5vw,40px);margin:9px 0 8px;letter-spacing:-1.2px}
 .action.primary{background:linear-gradient(100deg,#ff7417,#ff923d);color:#17100b;border:0}
 footer{text-align:center;color:#666;font-size:11px;margin-top:35px}
 @media(max-width:600px){main{margin-top:30px}.card{padding:19px}.bottom-actions{flex-direction:column}.action{width:100%}}
+
+/* SoraNetwork premium brand header */
+header.topbar,header.top{height:88px;min-height:88px;border-bottom:1px solid rgba(255,116,23,.2);background:linear-gradient(105deg,rgba(18,12,8,.98),rgba(9,9,9,.97) 58%,rgba(22,13,8,.97));box-shadow:0 9px 32px rgba(0,0,0,.24)}
+.brand{display:flex;align-items:center;gap:13px;text-decoration:none;font-weight:950;letter-spacing:0}
+.brand>img{width:49px;height:49px;flex:0 0 49px;object-fit:cover;border-radius:50%;padding:2px;border:1px solid rgba(255,116,23,.72);box-shadow:0 0 0 4px rgba(255,116,23,.07),0 0 25px rgba(255,116,23,.25)}
+.brand-mark{display:flex;flex-direction:column;gap:4px}
+.brand-name{font-size:19px;line-height:1;font-weight:950;letter-spacing:1.35px;color:#fff}
+.brand-name>span{color:var(--orange)}
+.brand-tag{font-size:8px;line-height:1;letter-spacing:3.1px;color:#85807b;font-weight:850}
+@media(max-width:560px){header.topbar,header.top{height:76px;min-height:76px}.brand{gap:10px}.brand>img{width:42px;height:42px;flex-basis:42px}.brand-name{font-size:15px;letter-spacing:1px}.brand-tag{font-size:7px;letter-spacing:2.2px}}
 </style>
 </head>
 <body>
 <header class="topbar"><div class="topbar-inner">
-<a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a>
+<a class="brand" href="/" aria-label="SoraNetwork ana sayfa"><img src="/sora-logo.webp" alt="SoraNetwork"><span class="brand-mark"><span class="brand-name">SORA<span>NETWORK</span></span><span class="brand-tag">MINECRAFT NETWORK</span></span></a>
 <div class="top-actions"><a class="overview-link" href="/hesap/">▦ Genel Bakış</a><a class="back" href="/profil/">← Hesabıma dön</a></div>
 </div></header>
 <main>
