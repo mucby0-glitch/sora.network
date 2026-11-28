@@ -154,7 +154,6 @@ async function init(){
   const me=await api("/api/account/me");
   if(!me.authenticated){location.replace("/?account=login");return}
   const name=me.username||"Oyuncu";
-  await loadProfileVisibility();
   let displayName=name;
   document.getElementById("email").textContent=me.email||"Belirtilmemiş";
   let skinUrl="";
