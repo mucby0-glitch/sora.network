@@ -19,10 +19,20 @@ main{min-width:0}.eyebrow{font-size:10px;font-weight:900;letter-spacing:2px;colo
 .content-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.panel{background:rgba(20,20,20,.88);border:1px solid var(--line);border-radius:15px;padding:20px;min-width:0}.panel h3{font-size:14px;margin:0 0 15px;display:flex;align-items:center;gap:9px}.panel h3:before{content:"";width:3px;height:15px;border-radius:3px;background:var(--orange)}.progress-row{display:flex;justify-content:space-between;gap:10px;color:#aaa;font-size:11px;font-weight:750;margin-bottom:9px}.progress-row strong{color:var(--light)}.track{height:9px;background:#292929;border-radius:20px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--light));border-radius:20px;transition:width .4s}.progress-note{font-size:10px;color:#777;margin-top:9px}.quick-links{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quick{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid rgba(255,255,255,.08);border-radius:11px;background:rgba(255,255,255,.025);font-size:11px;font-weight:800;color:#ccc;transition:.2s}.quick:hover{border-color:rgba(255,116,23,.35);background:rgba(255,116,23,.07);color:var(--light);transform:translateY(-1px)}.quick span{font-size:16px}.bottom-note{color:#666;font-size:10px;text-align:center;margin-top:24px}.error{color:#ffad75;font-size:12px;margin-top:12px;min-height:18px}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:static;display:flex;gap:5px;overflow-x:auto;padding:10px}.side-label,.side-note{display:none}.side-link{white-space:nowrap;margin:0}.side-icon{display:none}.content-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.topbar-inner,.shell{width:calc(100% - 26px)}.shell{margin-top:20px;gap:15px}.heading{align-items:flex-start;flex-direction:column}.welcome{align-items:flex-start;flex-direction:column;padding:21px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{padding:14px}.stat strong{font-size:18px}.quick-links{grid-template-columns:1fr 1fr}.panel{padding:16px}}
+
+/* SoraNetwork premium brand header */
+header.topbar,header.top{height:88px;min-height:88px;border-bottom:1px solid rgba(255,116,23,.2);background:linear-gradient(105deg,rgba(18,12,8,.98),rgba(9,9,9,.97) 58%,rgba(22,13,8,.97));box-shadow:0 9px 32px rgba(0,0,0,.24)}
+.brand{display:flex;align-items:center;gap:13px;text-decoration:none;font-weight:950;letter-spacing:0}
+.brand>img{width:49px;height:49px;flex:0 0 49px;object-fit:cover;border-radius:50%;padding:2px;border:1px solid rgba(255,116,23,.72);box-shadow:0 0 0 4px rgba(255,116,23,.07),0 0 25px rgba(255,116,23,.25)}
+.brand-mark{display:flex;flex-direction:column;gap:4px}
+.brand-name{font-size:19px;line-height:1;font-weight:950;letter-spacing:1.35px;color:#fff}
+.brand-name>span{color:var(--orange)}
+.brand-tag{font-size:8px;line-height:1;letter-spacing:3.1px;color:#85807b;font-weight:850}
+@media(max-width:560px){header.topbar,header.top{height:76px;min-height:76px}.brand{gap:10px}.brand>img{width:42px;height:42px;flex-basis:42px}.brand-name{font-size:15px;letter-spacing:1px}.brand-tag{font-size:7px;letter-spacing:2.2px}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-inner"><a class="brand" href="/"><img src="/sora-logo.webp" alt=""><span>SORA<span>NETWORK</span></span></a><a class="top-link" href="/">← Siteye dön</a></div></header>
+<header class="topbar"><div class="topbar-inner"><a class="brand" href="/" aria-label="SoraNetwork ana sayfa"><img src="/sora-logo.webp" alt="SoraNetwork"><span class="brand-mark"><span class="brand-name">SORA<span>NETWORK</span></span><span class="brand-tag">MINECRAFT NETWORK</span></span></a><a class="top-link" href="/">← Siteye dön</a></div></header>
 <div class="shell">
 <aside class="sidebar">
 <div class="side-label">OYUNCU MENÜSÜ</div>
