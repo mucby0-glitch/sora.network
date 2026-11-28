@@ -2063,6 +2063,12 @@ setInterval(checkServer, 60000);
     document.getElementById("account-register-form").addEventListener("submit", async event => {
         event.preventDefault();
         const form = event.currentTarget;
+        const password = document.getElementById("account-register-password").value;
+        if (password.length < 6 || password.length > 20) {
+            setStatus("Şifre 6 ile 20 karakter arasında olmalıdır.");
+            document.getElementById("account-register-password").focus();
+            return;
+        }
         setBusy(form, true);
         setStatus("Hesabın oluşturuluyor...");
         const email = document.getElementById("account-register-email").value.trim();
@@ -2070,7 +2076,7 @@ setInterval(checkServer, 60000);
             await apiRequest("/api/account/register", {
                 email,
                 username: document.getElementById("account-register-username").value.trim(),
-                password: document.getElementById("account-register-password").value,
+                password,
                 linkTicket: document.getElementById("account-register-ticket").value.trim()
             });
             pendingEmail = email;
@@ -2181,8 +2187,9 @@ setInterval(checkServer, 60000);
                 <input id="account-register-email" type="email" autocomplete="email" required>
                 <label for="account-register-username">Minecraft kullanıcı adı</label>
                 <input id="account-register-username" type="text" autocomplete="username" maxlength="16" required>
-                <label for="account-register-password">Şifre (10-128 karakter)</label>
-                <input id="account-register-password" type="password" minlength="10" maxlength="128" autocomplete="new-password" required>
+                <label for="account-register-password">Şifre (6-20 karakter)</label>
+                <input id="account-register-password" type="password" minlength="6" maxlength="20" autocomplete="new-password" required>
+                <small class="account-hint">Şifren en az 6, en fazla 20 karakter olmalıdır.</small>
                 <label for="account-register-ticket">Minecraft bağlantı kodu</label>
                 <input id="account-register-ticket" type="text" autocomplete="off" required>
                 <button type="submit">Kayıt Ol</button>
